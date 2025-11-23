@@ -41,7 +41,7 @@
     "or": "或",
     "understood": "明白了",
     "unspecified": "未指定",
-    "quick_actions": "快速行動",
+    "quick_actions": "快速操作",
     "balance": "平衡",
     "account": "帳戶",
     "accounts": "帳戶",
@@ -50,7 +50,7 @@
     "today": "今天",
     "yesterday": "昨天",
     "filters": "過濾",
-    "empty-warn": "哦！這裡非常空",
+    "empty-warn": "哦!這裡非常空",
     "search-no-results": "沒有符合您搜索條件的商品",
     "insufficient-data": "數據不足",
     "show-more-fields": "顯示更多欄位",
@@ -178,7 +178,7 @@
     "sl2Descr2": "此外，該應用程式的源代碼是公開的，任何人都可以對其進行協作並查看它是如何工作的",
     "lastSlideTitle": "一切準備就緒",
     "lastSlideDescr": "有了 Monekin，您終於可以實現您想要的財務獨立。您將擁有圖表、預算、提示、統計數據以及更多有關您的資金的信息。",
-    "lastSlideDescr2": "我們希望您享受這次體驗！如有疑問、建議，請隨時與我們聯繫......"
+    "lastSlideDescr2": "我們希望您享受這次體驗!如有疑問、建議，請隨時與我們聯繫......"
   },
   "HOME": {
     "title": "儀表板",
@@ -190,15 +190,15 @@
     "active-accounts": "活躍帳戶",
     "no-accounts": "尚未建立帳戶",
     "no-accounts.descr": "開始使用 Monekin 的所有魔力。至少建立一個帳戶以開始添加交易",
-    "last-transactions": "最後的交易",
-    "should-create-account.header": "哎呀！",
+    "last-transactions": "最新交易",
+    "should-create-account.header": "哎呀!",
     "should-create-account.message": "您必須至少擁有一個非存檔帳戶才能開始建立交易"
   },
   "FINANCIAL-HEALTH": {
     "display": "財務健康",
     "review": {
       "very_good(context=GenderContext)": {
-        "male,female": "很好！"
+        "male,female": "很好!"
       },
       "good(context=GenderContext)": {
         "male,female": "好"
@@ -216,9 +216,9 @@
         "male,female": "數據不足"
       },
       "descr": {
-        "insufficient_data": "看起來我們沒有足夠的收入來計算您的財務健康狀況。添加這段時間的一些收入/收入，以便我們能夠幫助您！",
-        "very_good": "恭喜！您的財務狀況非常好。我們希望您繼續保持良好的勢頭，並繼續與 Monekin 一起學習",
-        "good": "太棒了！您的財務狀況良好。請訪問分析選項卡，了解如何節省更多！",
+        "insufficient_data": "看起來我們沒有足夠的收入來計算您的財務健康狀況。添加這段時間的一些收入/收入，以便我們能夠幫助您!",
+        "very_good": "恭喜!您的財務狀況非常好。我們希望您繼續保持良好的勢頭，並繼續與 Monekin 一起學習",
+        "good": "太棒了!您的財務狀況良好。請訪問分析選項卡，了解如何節省更多!",
         "normal": "您的財務健康狀況或多或少處於這一時期其他人口的平均水平",
         "bad": "看來您的財務狀況還不是最好的。探索其餘圖表以了解更多有關您財務狀況的信息",
         "very_bad": "嗯，您的財務健康狀況遠低於應有的水平。探索其餘圖表以了解有關您財務狀況的更多信息"
@@ -227,8 +227,8 @@
     "monthsWithoutIncome": {
       "title": "存活率",
       "subtitle": "考慮到您的餘額，您可以在沒有收入的情況下度過多長時間",
-      "text.zero": "按照這樣的開支，沒有收入你一個月都活不下去！",
-      "text.one": "按照這樣的收入，如果沒有收入，你幾乎無法生存大約一個月！",
+      "text.zero": "按照這樣的開支，沒有收入你一個月都活不下去!",
+      "text.one": "按照這樣的收入，如果沒有收入，你幾乎無法生存大約一個月!",
       "text.other": "以這樣的支出速度，如果沒有收入，您大約可以生存 <b>{{n}}個月</b>。",
       "text.infinite": "以這樣的支出速度，如果沒有收入，您大約可以<b>一生</b>生存。",
       "suggestion": "請記住，建議始終將此比率保持在至少 5 個月以上。如果您發現自己沒有足夠的儲蓄緩衝，請減少不必要的開支。",
@@ -238,9 +238,9 @@
       "title": "儲蓄百分比",
       "subtitle": "你的收入中有哪一部分沒有在這段時間花掉",
       "text": {
-        "good": "恭喜您！您在這段時間裡成功節省了收入的<b>{{value}}%</b>。看來您已經是專家了，繼續努力吧！",
+        "good": "恭喜您!您在這段時間裡成功節省了收入的<b>{{value}}%</b>。看來您已經是專家了，繼續努力吧!",
         "normal": "恭喜您，在此期間您已成功節省收入的 <b>{{value}}%</b>。",
-        "bad": "在此期間，您已成功節省了收入的 <b>{{value}}%</b>。但是，我們認為您還可以做得更多！",
+        "bad": "在此期間，您已成功節省了收入的 <b>{{value}}%</b>。但是，我們認為您還可以做得更多!",
         "very_bad": "哇哦，這段時間你什麼都沒保存下來。"
       },
       "suggestion": "請記住，建議將收入的至少 15-20% 存起來。"
@@ -251,14 +251,14 @@
     "balance": "平衡",
     "final-balance": "最終餘額",
     "balance-by-account": "帳戶餘額",
-    "balance-by-account-subtitle": "我的大部分錢都在哪裡？",
+    "balance-by-account-subtitle": "我的大部分錢都在哪裡?",
     "balance-by-currency": "按貨幣餘额",
-    "balance-by-currency-subtitle": "我有多少錢的外幣？",
+    "balance-by-currency-subtitle": "我有多少錢的外幣?",
     "balance-evolution": "平衡趨勢",
-    "balance-evolution-subtitle": "我的錢比以前多了嗎？",
+    "balance-evolution-subtitle": "我的錢比以前多了嗎?",
     "compared-to-previous-period": "與上一时期相比",
     "cash-flow": "現金流",
-    "cash-flow-subtitle": "我的支出是否少于我的收入？",
+    "cash-flow-subtitle": "我的支出是否少于我的收入?",
     "by-periods": "按時期",
     "by-categories": "按類別",
     "by-tags": "按標籤",
@@ -302,7 +302,7 @@
     "edit.multiple.success": "{{x}}筆交易已成功編輯",
     "duplicate": "複製交易",
     "duplicate.short": "複製",
-    "duplicate.warning-message": "將在同一日期建立與此相同的交易，您想繼續嗎？",
+    "duplicate.warning-message": "將在同一日期建立與此相同的交易，您想繼續嗎?",
     "duplicate.success": "交易複製成功",
     "delete": "刪除交易",
     "delete.warning-message": "此操作不可逆轉。您的帳戶當前餘額和所有統計資料都將重新計算",
@@ -322,7 +322,7 @@
       "accept-dialog.title": "接受交易",
       "accept-dialog.msg-single": "該交易的新狀態將為空。您可以隨時重新編輯該交易的狀態",
       "accept-dialog.msg": "此操作將建立日期為{{date}}的新交易。您將能夠在交易頁面上查看此交易的詳細資訊",
-      "recurrent-rule-finished": "循環規則已完成，無需再支付！"
+      "recurrent-rule-finished": "循環規則已完成，無需再支付!"
     },
     "LIST": {
       "all": "所有交易",
@@ -454,7 +454,7 @@
     "close_date": "截止日期",
     "reopen": "重新開立帳戶",
     "reopen.short": "重新開放",
-    "reopen.descr": "您確定要重新開啟此帳戶嗎？",
+    "reopen.descr": "您確定要重新開啟此帳戶嗎?",
     "balance": "帳戶餘額",
     "n_transactions": "交易數量",
     "add_money": "增加金額",
@@ -484,7 +484,7 @@
       "swift": "swift"
     },
     "DELETE": {
-      "warning-header": "刪除帳戶？",
+      "warning-header": "刪除帳戶?",
       "warning-text": "此操作將刪除該帳戶及其所有交易",
       "success": "帳號刪除成功"
     },
@@ -510,7 +510,7 @@
     "currency-manager.descr": "配置您的貨幣及其與其他貨幣的匯率",
     "preferred-currency": "首選/基礎貨幣",
     "change-preferred-currency-title": "更改首選貨幣",
-    "change-preferred-currency-msg": "從現在開始，所有統計數據和預算都將以該貨幣顯示。帳戶和交易將保留其所擁有的貨幣。如果您執行此操作，所有保存的匯率都將被刪除。您想繼續嗎？",
+    "change-preferred-currency-msg": "從現在開始，所有統計數據和預算都將以該貨幣顯示。帳戶和交易將保留其所擁有的貨幣。如果您執行此操作，所有保存的匯率都將被刪除。您想繼續嗎?",
     "FORM": {
       "equal-to-preferred-warn": "幣種不能等於用戶幣種",
       "specify-a-currency": "請指定貨幣",
@@ -549,7 +549,7 @@
     "edit": "編輯標籤",
     "edit.success": "標籤編輯成功",
     "delete.success": "類別刪除成功",
-    "delete-warning-header": "刪除標籤？",
+    "delete-warning-header": "刪除標籤?",
     "delete-warning-message": "此操作不會刪除具有此標籤的交易。"
   },
   "CATEGORIES": {
@@ -575,7 +575,7 @@
     "merge.warning2": "類別<b>{{from}}</b>將被不可逆轉地刪除。 ",
     "merge.success": "類別合併成功",
     "delete.success": "類別已成功刪除",
-    "delete-warning-header": "刪除類別？",
+    "delete-warning-header": "刪除類別?",
     "delete-warning-message": "此操作將不可逆轉地刪除與此類別相關的所有交易<b>({{x}})</b>。",
     "SELECT": {
       "title": "選擇類別",
@@ -748,9 +748,9 @@
       "display.descr": "匯出和匯入您的數據，這樣您就不會丟失任何東西",
       "delete-all": "刪除我的資料",
       "delete-all-header1": "Stop right there padawan ⚠️⚠️",
-      "delete-all-message1": "您確定要繼續嗎？您的所有資料將永久刪除且無法恢復",
+      "delete-all-message1": "您確定要繼續嗎?您的所有資料將永久刪除且無法恢復",
       "delete-all-header2": "最後一步⚠️⚠️",
-      "delete-all-message2": "刪除帳戶後，您將刪除所有儲存的個人資料。您的帳戶、交易、預算和類別將被刪除且無法恢復。您同意嗎？"
+      "delete-all-message2": "刪除帳戶後，您將刪除所有儲存的個人資料。您的帳戶、交易、預算和類別將被刪除且無法恢復。您同意嗎?"
     },
     "ABOUT_US": {
       "display": "應用程式資訊",
@@ -772,16 +772,16 @@
       "display": "幫助我們",
       "description": "了解如何幫助 Monekin 變得越來越好",
       "rate-us": "評價我們",
-      "rate-us.descr": "歡迎任何價格！",
+      "rate-us.descr": "歡迎任何價格!",
       "share": "分享 Monekin",
       "share.descr": "與朋友和家人分享我們的應用程式",
-      "share.text": "Monekin！最好的個人理財應用程式。在這裡下載",
-      "thanks": "謝謝你！",
+      "share.text": "Monekin!最好的個人理財應用程式。在這裡下載",
+      "thanks": "謝謝你!",
       "thanks_long": "您對 Monekin 和其他大大小小的開源專案的貢獻使得這樣偉大的專案成為可能。感謝您花時間做出貢獻。",
       "donate": "做捐贈",
-      "donate.descr": "透過您的捐款，您將幫助該應用程式繼續改進。還有什麼比邀請我喝咖啡來感謝所做的工作更好的方式呢？",
-      "donate.success": "捐款已完成。非常感謝您的貢獻！❤️",
-      "donate.err": "糟糕！接收您的付款時出現錯誤",
+      "donate.descr": "透過您的捐款，您將幫助該應用程式繼續改進。還有什麼比邀請我喝咖啡來感謝所做的工作更好的方式呢?",
+      "donate.success": "捐款已完成。非常感謝您的貢獻!❤️",
+      "donate.err": "糟糕!接收您的付款時出現錯誤",
       "report": "報告錯誤、留下建議…"
     }
   }
