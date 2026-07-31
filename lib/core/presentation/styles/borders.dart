@@ -3,6 +3,19 @@ import 'package:monekin/core/presentation/app_colors.dart';
 
 Radius get inputBorderRadius => Radius.circular(6);
 
+BoxDecoration cardSurfaceDecoration(
+  BuildContext context, {
+  double radius = 20,
+}) {
+  return BoxDecoration(
+    color: Theme.of(context).colorScheme.surfaceContainerLow,
+    borderRadius: BorderRadius.circular(radius),
+    border: Border.all(
+      color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.4),
+    ),
+  );
+}
+
 List<BoxShadow> boxShadowGeneral(BuildContext context) {
   return [
     BoxShadow(

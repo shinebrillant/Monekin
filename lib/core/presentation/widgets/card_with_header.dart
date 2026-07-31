@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:monekin/core/presentation/app_colors.dart';
 import 'package:monekin/core/presentation/styles/borders.dart';
 import 'package:monekin/i18n/generated/translations.g.dart';
 
 /// The radius of the `CardWithHeader` widget, a very useful widget through the app
-const cardWithHeaderRadius = 12.0;
+const cardWithHeaderRadius = 20.0;
 
 class CardWithHeader extends StatelessWidget {
   const CardWithHeader({
@@ -14,6 +15,8 @@ class CardWithHeader extends StatelessWidget {
     this.bodyPadding = const EdgeInsets.all(0),
     this.footer,
     this.titleBuilder,
+    this.onHeaderActionTap,
+    this.headerActionLabel,
   });
 
   final Widget body;
@@ -22,63 +25,78 @@ class CardWithHeader extends StatelessWidget {
   final String title;
   final Widget Function(String title)? titleBuilder;
   final String? subtitle;
+  final VoidCallback? onHeaderActionTap;
+  final String? headerActionLabel;
 
   final EdgeInsets bodyPadding;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(boxShadow: boxShadowGeneral(context)),
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        margin: const EdgeInsets.all(0),
-        elevation: 0,
-        color: Theme.of(context).cardColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              clipBehavior: Clip.hardEdge,
-              padding: const EdgeInsets.fromLTRB(16, 12, 2, 4),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                // color: AppColors.of(context).light,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+    final t = Translations.of(context);
+
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: cardSurfaceDecoration(context, radius: cardWithHeaderRadius),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 10, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       DefaultTextStyle(
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(fontSize: 18),
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
                         child: titleBuilder != null
                             ? titleBuilder!(title)
                             : Text(title),
                       ),
-                      if (subtitle != null)
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 2),
                         Text(
                           subtitle!,
-                          style: Theme.of(context).textTheme.bodySmall!,
+                          style: Theme.of(context).textTheme.bodySmall!
+                              .copyWith(color: AppColors.of(context).textHint),
                         ),
+                      ],
                     ],
                   ),
-                ],
-              ),
+                ),
+                if (onHeaderActionTap != null)
+                  TextButton.icon(
+                    onPressed: onHeaderActionTap,
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      minimumSize: const Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                    ),
+                    iconAlignment: IconAlignment.end,
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 15),
+                    label: Text(headerActionLabel ?? t.ui_actions.see_more),
+                  ),
+              ],
             ),
-            Material(
-              type: MaterialType.transparency,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Padding(padding: bodyPadding, child: body),
-            ),
-            if (footer != null) footer!,
-          ],
-        ),
+          ),
+          Material(
+            type: MaterialType.transparency,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Padding(padding: bodyPadding, child: body),
+          ),
+          if (footer != null) ...[footer!],
+        ],
       ),
     );
   }
@@ -110,15 +128,17 @@ class CardFooterWithSingleButton extends StatelessWidget {
         Transform.translate(
           offset: const Offset(0, 1),
           child: Divider(
-            thickness: 2,
+            thickness: 1,
             indent: indent,
             endIndent: indent,
-            color: Theme.of(context).dividerColor.withOpacity(0.2),
+            color: Theme.of(
+              context,
+            ).colorScheme.outlineVariant.withOpacity(0.35),
           ),
         ),
         TextButton.icon(
           style: TextButton.styleFrom(
-            minimumSize: const Size.fromHeight(48),
+            minimumSize: const Size.fromHeight(44),
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(
               horizontal: indent,

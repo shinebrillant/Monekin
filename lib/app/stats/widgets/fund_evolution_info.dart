@@ -112,14 +112,12 @@ class FundEvolutionInfo extends StatelessWidget {
 
                                   return TrendingValue(
                                     percentage: snapshot.data!,
-                                    filled: false,
                                     fontWeight: Theme.of(
                                       context,
                                     ).textTheme.headlineSmall!.fontWeight!,
                                     fontSize: Theme.of(
                                       context,
                                     ).textTheme.headlineSmall!.fontSize!,
-                                    outlined: false,
                                   );
                                 },
                               ),
