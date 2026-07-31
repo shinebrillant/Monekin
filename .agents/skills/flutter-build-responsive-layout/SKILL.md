@@ -22,6 +22,7 @@ Determine the available space accurately to ensure layouts adapt to the app wind
 *   **Use `LayoutBuilder`** to make layout decisions based on the parent widget's allocated space. Evaluate `constraints.maxWidth` to determine the appropriate widget tree to return.
 *   **Do not use `MediaQuery.orientationOf` or `OrientationBuilder`** near the top of the widget tree to switch layouts. Device orientation does not accurately reflect the available app window space.
 *   **Do not check for hardware types** (e.g., "phone" vs. "tablet"). Flutter apps run in resizable windows, multi-window modes, and picture-in-picture. Base all layout decisions strictly on available window space.
+*   **Do not scatter magic width numbers** (e.g. `if (width > 600)`). Centralize breakpoints as named constants and compare against those. In this repo, reuse the existing helpers in `lib/core/presentation/responsive/` — `BreakPoint`/`BreakpointID` (named widths: xs/sm/md/lg/xl/xxl) with `BreakPoint.of(context)` (window width) or `BreakPoint.fromWidth(constraints.maxWidth)` (locally available width, e.g. inside a `LayoutBuilder`) — and `AppUtils.isMobileLayout(context)`. Prefer `BreakPoint.fromWidth(...).isLargerOrEqualTo(BreakpointID.lg)` over a raw `constraints.maxWidth >= 960`.
 
 ## Widget Sizing and Constraints
 Understand and apply Flutter's core layout rule: **Constraints go down. Sizes go up. Parent sets position.**
@@ -31,6 +32,16 @@ Understand and apply Flutter's core layout rule: **Constraints go down. Sizes go
     *   Use `Flexible` to allow a child to size itself up to a specific limit while still expanding/contracting. Use the `flex` factor to define the ratio of space consumption among siblings.
 *   **Constrain Width:** Prevent widgets from consuming all horizontal space on large screens. Wrap widgets like `GridView` or `ListView` in a `ConstrainedBox` or `Container` and define a `maxWidth` in the `BoxConstraints`.
 *   **Lazy Rendering:** Always use `ListView.builder` or `GridView.builder` when rendering lists with an unknown or large number of items.
+*   **Gaps between children:** Use the native `spacing` parameter on `Row`, `Column`, and `Flex` (Flutter 3.27+), and `spacing`/`runSpacing` on `Wrap`, to separate children. Do **not** manually interleave `SizedBox(width/height: ...)` widgets between children — it is more verbose, harder to maintain, and easy to get wrong. Prefer `Row(spacing: 8, children: [...])` over `Row(children: [a, SizedBox(width: 8), b])`.
+
+## Modern Flutter Features
+
+Prefer newer, built-in APIs over hand-rolled equivalents (check the SDK range in `pubspec.yaml` before using a feature):
+
+*   **`spacing:` on `Flex`/`Row`/`Column`** (3.27+) — even, gap-only spacing between children. Replaces `SizedBox` separators. Note: `spacing` only adds gaps *between* children, not leading/trailing padding.
+*   **`Color.withValues(alpha: ...)`** (3.27+) — replaces the deprecated `withOpacity`. (This repo still uses `withOpacity` widely for consistency; match the surrounding code unless doing a dedicated migration.)
+*   **Switch expressions & pattern matching** (Dart 3+) — prefer over long `if`/`else` or `switch` statement chains when producing a value (see the `dart-use-pattern-matching` skill).
+*   **`ListenableBuilder` / `ValueListenableBuilder`** — prefer over manual `addListener`/`setState` wiring for `Listenable`/`ValueNotifier` sources.
 
 ## Device and Orientation Behaviors
 Ensure the app behaves correctly across all device form factors and input methods.

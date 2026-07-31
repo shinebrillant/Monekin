@@ -12,11 +12,11 @@ class BreakPoint extends Equatable {
 
   const BreakPoint(this.id, {required this.width});
 
-  /// Get the current BreakPoint based on the device width
-  static BreakPoint of(BuildContext context, {Set<BreakPoint>? breakpoints}) {
+  /// Get the [BreakPoint] that corresponds to the given [width]. Useful to make
+  /// decisions based on a locally available width (e.g. `LayoutBuilder`'s
+  /// `constraints.maxWidth`) instead of the whole window.
+  static BreakPoint fromWidth(double width, {Set<BreakPoint>? breakpoints}) {
     breakpoints ??= appBreakPoints;
-
-    final width = MediaQuery.of(context).size.width;
 
     for (int i = breakpoints.length - 1; i >= 0; i--) {
       final breakpoint = breakpoints.elementAt(i);
@@ -24,6 +24,14 @@ class BreakPoint extends Equatable {
     }
 
     return breakpoints.first;
+  }
+
+  /// Get the current BreakPoint based on the device width
+  static BreakPoint of(BuildContext context, {Set<BreakPoint>? breakpoints}) {
+    return fromWidth(
+      MediaQuery.of(context).size.width,
+      breakpoints: breakpoints,
+    );
   }
 
   static BreakPoint getById(BreakpointID id) {
