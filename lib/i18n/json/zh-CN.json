@@ -979,7 +979,6 @@
       "already_exists": "具有此名称的资产已存在。您可能想要编辑它",
       "valuation_before_creation_date": "该资产的估值日期早于收购日期",
       "acquisition_date": "创建日期",
-      "creation_date_before_linked_account": "The asset date cannot be before the linked account creation date",
       "linked_liability": "连带责任",
       "link_existing_liability": "链接现有责任",
       "no_liabilities": "您还没有任何负债。",

@@ -7,14 +7,12 @@ import 'package:monekin/app/assets/widgets/asset_type_selector.dart';
 import 'package:monekin/app/debts/components/transaction_selector.dart';
 import 'package:monekin/app/layout/page_framework.dart';
 import 'package:monekin/core/database/app_db.dart';
-import 'package:monekin/core/database/services/account/account_service.dart';
 import 'package:monekin/core/database/services/account/asset_service.dart';
 import 'package:monekin/core/database/services/account/asset_valuation_service.dart';
 import 'package:monekin/core/database/services/currency/currency_service.dart';
 import 'package:monekin/core/database/services/debts/debt_service.dart';
 import 'package:monekin/core/database/services/exchange-rate/exchange_rate_service.dart';
 import 'package:monekin/core/database/services/transaction/transaction_service.dart';
-import 'package:monekin/core/models/account/account.dart';
 import 'package:monekin/core/models/asset/asset.dart';
 import 'package:monekin/core/models/asset/asset_type.enum.dart';
 import 'package:monekin/core/models/currency/currency.dart';
@@ -64,7 +62,6 @@ class _AssetFormPageState extends State<AssetFormPage> {
   Currency? _currency;
   DateTime _creationDate = DateTime.now();
   AssetType _assetType = AssetType.other;
-  Account? _linkedAccount;
 
   /// Current step in the creation flow: 0 = choose the asset type, 1 = fill the
   /// form. Only relevant when [_hasTypeStep] is true.
@@ -99,14 +96,6 @@ class _AssetFormPageState extends State<AssetFormPage> {
   /// pre-selected type or the type-selection step).
   bool get _isTypeLocked => _assetToEdit == null;
 
-  bool get _creationDateBeforeLinkedAccount {
-    final linked = _linkedAccount;
-    if (linked == null) return false;
-    return DateUtils.dateOnly(
-      _creationDate,
-    ).isBefore(DateUtils.dateOnly(linked.date));
-  }
-
   /// The acquisition transaction must be dated on or before the asset's
   /// creation date (see [AssetValuationService.isAcquisitionTransaction]).
   bool get _creationDateBeforeAcquisitionTransaction {
@@ -117,9 +106,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
     ).isBefore(DateUtils.dateOnly(tx.date));
   }
 
-  bool get _creationDateInvalid =>
-      _creationDateBeforeLinkedAccount ||
-      _creationDateBeforeAcquisitionTransaction;
+  bool get _creationDateInvalid => _creationDateBeforeAcquisitionTransaction;
 
   String _dateFieldLabel(Translations t) => t.assets.form.acquisition_date;
 
@@ -316,13 +303,6 @@ class _AssetFormPageState extends State<AssetFormPage> {
   Future<void> submitForm() async {
     final t = Translations.of(context);
 
-    if (_creationDateBeforeLinkedAccount) {
-      MonekinSnackbar.warning(
-        SnackbarParams(t.assets.form.creation_date_before_linked_account),
-      );
-      return;
-    }
-
     if (_creationDateBeforeAcquisitionTransaction) {
       MonekinSnackbar.warning(
         SnackbarParams(
@@ -367,7 +347,6 @@ class _AssetFormPageState extends State<AssetFormPage> {
           ? null
           : _descriptionController.text,
       assetType: _assetType,
-      linkedAccountID: null,
       linkedDebtId: _linkedDebtId,
     );
 
@@ -448,12 +427,6 @@ class _AssetFormPageState extends State<AssetFormPage> {
     _creationDate = _assetToEdit.creationDate;
     _assetType = _assetToEdit.assetType;
     _linkedDebtId = _assetToEdit.linkedDebtId;
-    final linkedId = _assetToEdit.linkedAccountID;
-    if (linkedId != null) {
-      AccountService.instance.getAccountById(linkedId).first.then((acc) {
-        if (mounted) setState(() => _linkedAccount = acc);
-      });
-    }
 
     CurrencyService.instance
         .getCurrencyByCode(_assetToEdit.currency.code)
@@ -694,9 +667,6 @@ class _AssetFormPageState extends State<AssetFormPage> {
                   dateFormat: DateFormat.yMMMd().add_jm(),
                   validator: (e) {
                     if (e == null) return t.general.validations.required;
-                    if (_creationDateBeforeLinkedAccount) {
-                      return t.assets.form.creation_date_before_linked_account;
-                    }
                     if (_creationDateBeforeAcquisitionTransaction) {
                       return t
                           .assets
@@ -711,13 +681,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
                     });
                   },
                 ),
-                if (_creationDateBeforeLinkedAccount)
-                  InlineInfoCard(
-                    margin: const EdgeInsets.only(top: 12),
-                    text: t.assets.form.creation_date_before_linked_account,
-                    mode: InlineInfoCardMode.warn,
-                  )
-                else if (_creationDateBeforeAcquisitionTransaction)
+                if (_creationDateBeforeAcquisitionTransaction)
                   InlineInfoCard(
                     margin: const EdgeInsets.only(top: 12),
                     text: t

@@ -61,6 +61,17 @@ void main() {
     migrateSample();
   });
 
+  test('assets end up physical-only: no linkedAccountID, yes linkedDebtId', () {
+    final db = migrateSample();
+
+    final columns = db
+        .select('PRAGMA table_info(assets)')
+        .map((r) => r['name'] as String);
+
+    expect(columns, isNot(contains('linkedAccountID')));
+    expect(columns, contains('linkedDebtId'));
+  });
+
   test('migrated holdings carry a non-phantom cost basis (P&L = 0)', () {
     final db = migrateSample();
 

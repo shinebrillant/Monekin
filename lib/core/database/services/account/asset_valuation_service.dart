@@ -3,8 +3,6 @@ import 'package:flutter/material.dart' show DateUtils;
 import 'package:monekin/core/database/app_db.dart';
 import 'package:monekin/core/database/services/account/asset_service.dart';
 import 'package:monekin/core/database/services/exchange-rate/exchange_rate_service.dart';
-import 'package:monekin/core/database/utils/drift_utils.dart';
-import 'package:monekin/core/models/account/account.dart';
 import 'package:monekin/core/models/asset/asset.dart';
 import 'package:monekin/core/models/transaction/transaction_status.enum.dart';
 import 'package:monekin/core/models/transaction/transaction_type.enum.dart';
@@ -62,38 +60,6 @@ class AssetValuationService {
     return db.getLatestValuationForAsset(assetId: assetId).watchSingleOrNull();
   }
 
-  /// Market value of **linked portfolio assets**.
-  ///
-  /// When [convertToPreferredCurrency] is false, amounts are summed in each
-  /// asset's currency (caller should only use when assets match the account).
-  Stream<double> getLinkedPortfolioMarketValue(
-    Account account, {
-    DateTime? date,
-    bool convertToPreferredCurrency = false,
-  }) {
-    return AssetService.instance
-        .getAssets(
-          predicate: (a, c) =>
-              a.linkedAccountID.isNotNull() &
-              a.linkedAccountID.equals(account.id),
-        )
-        .switchMap((linked) {
-          if (linked.isEmpty) return Stream.value(0.0);
-          final streams = linked
-              .map(
-                (asset) => getAssetValueAtDate(
-                  asset,
-                  date: date,
-                  convertToPreferredCurrency: convertToPreferredCurrency,
-                ),
-              )
-              .toList();
-          return Rx.combineLatestList(
-            streams,
-          ).map((values) => values.fold<double>(0, (sum, v) => sum + v));
-        });
-  }
-
   /// Returns the current value for an asset.
   ///
   /// Uses the latest valuation if one exists; otherwise returns the asset's
@@ -133,67 +99,28 @@ class AssetValuationService {
     });
   }
 
-  /// Total market value of assets at [date] in the user's preferred currency.
-  ///
-  /// With [considerLinkedAccounts] `true` (default), every asset row is included.
-  /// With `false`, assets linked to an account are omitted.
-  Stream<double> getTotalAssetsValueAtDate({
-    DateTime? date,
-    bool considerLinkedAccounts = true,
-  }) {
-    return AssetService.instance
-        .getAssets(
-          predicate: (a, currency) => buildDriftExpr([
-            if (!considerLinkedAccounts) a.linkedAccountID.isNull(),
-          ]),
-        )
-        .switchMap((assets) {
-          if (assets.isEmpty) {
-            return Stream.value(0.0);
-          }
+  /// Total market value of every asset at [date], in the user's preferred
+  /// currency.
+  Stream<double> getTotalAssetsValueAtDate({DateTime? date}) {
+    return AssetService.instance.getAssets().switchMap((assets) {
+      if (assets.isEmpty) {
+        return Stream.value(0.0);
+      }
 
-          final streams = assets
-              .map(
-                (asset) => getAssetValueAtDate(
-                  asset,
-                  date: date,
-                  convertToPreferredCurrency: true,
-                ),
-              )
-              .toList();
+      final streams = assets
+          .map(
+            (asset) => getAssetValueAtDate(
+              asset,
+              date: date,
+              convertToPreferredCurrency: true,
+            ),
+          )
+          .toList();
 
-          return CombineLatestStream.list(
-            streams,
-          ).map((values) => values.fold(0.0, (sum, value) => sum + value));
-        });
-  }
-
-  /// Same as [getTotalAssetsValueAtDate] with linked-account assets excluded.
-  Stream<double> getStandaloneAssetsValueAtDate({DateTime? date}) {
-    return getTotalAssetsValueAtDate(date: date, considerLinkedAccounts: false);
-  }
-
-  /// Sum of linked asset market values for an account (0 if none).
-  Stream<double> streamLinkedAssetsTotalForAccount(
-    String accountId, {
-    DateTime? date,
-    bool convertToPreferredCurrency = false,
-  }) {
-    return db
-        .getAccountsWithFullData(
-          predicate: (a, c) => a.id.equals(accountId),
-          limit: (a, c) => Limit(1, 0),
-        )
-        .watch()
-        .switchMap((accounts) {
-          if (accounts.isEmpty) return Stream.value(0.0);
-          final account = accounts.first;
-          return getLinkedPortfolioMarketValue(
-            account,
-            date: date,
-            convertToPreferredCurrency: convertToPreferredCurrency,
-          );
-        });
+      return CombineLatestStream.list(
+        streams,
+      ).map((values) => values.fold(0.0, (sum, value) => sum + value));
+    });
   }
 
   /// Valuation snapshot delta from the asset leg amount and buy/sell direction.

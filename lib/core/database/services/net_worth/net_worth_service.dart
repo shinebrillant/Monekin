@@ -10,16 +10,16 @@ import 'package:rxdart/rxdart.dart';
 
 /// Gross assets and net worth in the user’s preferred currency.
 ///
-/// **Gross assets** = all account balances ([AccountService.getAccountsMoney]) plus
-/// standalone assets only ([AssetValuationService.getStandaloneAssetsValueAtDate]) so
-/// linked portfolio rows are not double-counted (they are already inside investment
-/// account balances). See `docs/BALANCE_FORMULAS.md` in the repo.
+/// **Gross assets** = all account balances ([AccountService.getAccountsMoney],
+/// which already include the market value of each account's holdings) plus the
+/// value of every asset ([AssetValuationService.getTotalAssetsValueAtDate]).
+/// See `docs/BALANCE_FORMULAS.md` in the repo.
 class NetWorthService {
   NetWorthService._();
   static final NetWorthService instance = NetWorthService._();
 
-  /// All accounts (per [AccountService.getAccountsMoney]) plus standalone assets
-  /// at [date], converted to the preferred currency.
+  /// All accounts (per [AccountService.getAccountsMoney]) plus every asset at
+  /// [date], converted to the preferred currency.
   Stream<double> getGrossAssetsAtDate(
     DateTime date, {
     TransactionFilterSet trFilters = const TransactionFilterSet(),
@@ -30,8 +30,8 @@ class NetWorthService {
         trFilters: trFilters,
         convertToPreferredCurrency: true,
       ),
-      AssetValuationService.instance.getStandaloneAssetsValueAtDate(date: date),
-      (accountsTotal, standaloneAssets) => accountsTotal + standaloneAssets,
+      AssetValuationService.instance.getTotalAssetsValueAtDate(date: date),
+      (accountsTotal, assetsTotal) => accountsTotal + assetsTotal,
     );
   }
 

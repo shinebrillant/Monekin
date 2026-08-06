@@ -979,7 +979,6 @@
       "already_exists": "Bu ada sahip bir öğe zaten mevcut. Düzenlemek isteyebilirsiniz",
       "valuation_before_creation_date": "Bu varlıkta satın alma tarihinden önceki bir tarihe sahip değerlemeler mevcut",
       "acquisition_date": "Oluşturulma tarihi",
-      "creation_date_before_linked_account": "The asset date cannot be before the linked account creation date",
       "linked_liability": "Bağlantılı sorumluluk",
       "link_existing_liability": "Mevcut sorumluluğu bağlayın",
       "no_liabilities": "Henüz herhangi bir yükümlülüğünüz yok.",

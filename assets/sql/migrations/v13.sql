@@ -372,8 +372,10 @@ DELETE FROM assets
 WHERE assetType IN ('stocks', 'funds', 'crypto');
 
 -- ------------------------------------------------------------
--- Step 8: Rebuild `assets` as physical-only and add `linkedDebtId`.
--- (All financial assets have been converted/removed above.)
+-- Step 8: Rebuild `assets` as physical-only: drop `linkedAccountID`
+-- and add `linkedDebtId`. (All financial assets have been
+-- converted/removed above, and physical property does not belong to
+-- an account: it is worth what it is worth on its own.)
 -- We create `assets_new`, copy, DROP `assets`, then rename the new
 -- table into place, so child FKs (valuations, transactions) keep
 -- pointing at `assets` instead of being rewritten to a temp name.
@@ -386,12 +388,11 @@ CREATE TABLE assets_new (
     initialValue REAL NOT NULL DEFAULT 0,
     creationDate TEXT NOT NULL,
     assetType TEXT NOT NULL DEFAULT 'other' CHECK(assetType IN ('real_estate', 'vehicle', 'precious_metal', 'jewelry_art', 'other')),
-    linkedAccountID TEXT REFERENCES accounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
     linkedDebtId TEXT REFERENCES debts(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-INSERT INTO assets_new (id, name, description, currencyId, initialValue, creationDate, assetType, linkedAccountID, linkedDebtId)
-SELECT id, name, description, currencyId, initialValue, creationDate, assetType, linkedAccountID, NULL
+INSERT INTO assets_new (id, name, description, currencyId, initialValue, creationDate, assetType, linkedDebtId)
+SELECT id, name, description, currencyId, initialValue, creationDate, assetType, NULL
 FROM assets;
 
 DROP TABLE assets;

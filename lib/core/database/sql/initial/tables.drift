@@ -144,9 +144,6 @@ CREATE TABLE IF NOT EXISTS assets (
 
     assetType TEXT NOT NULL DEFAULT 'other' CHECK(assetType IN ('real_estate', 'vehicle', 'precious_metal', 'jewelry_art', 'other')) MAPPED BY `CustomEnumConverter(AssetType.values)`,
 
-    -- When set, this asset rolls into the linked account total (e.g. brokerage portfolio)
-    linkedAccountID TEXT REFERENCES accounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-
     -- Optional liability (e.g. a mortgage) linked to this physical asset
     linkedDebtId TEXT REFERENCES debts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) AS AssetInDB;

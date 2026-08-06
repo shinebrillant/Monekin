@@ -979,7 +979,6 @@
       "already_exists": "Ein Asset mit diesem Namen existiert bereits. Möglicherweise möchten Sie es bearbeiten",
       "valuation_before_creation_date": "Es gibt Bewertungen für diesen Vermögenswert mit einem Datum vor dem Erstellungsdatum",
       "acquisition_date": "Erstellungsdatum",
-      "creation_date_before_linked_account": "The asset date cannot be before the linked account creation date",
       "linked_liability": "Verbundene Haftung",
       "link_existing_liability": "Bestehende Haftung verknüpfen",
       "no_liabilities": "Sie haben noch keine Verbindlichkeiten.",

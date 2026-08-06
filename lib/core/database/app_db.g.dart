@@ -1920,18 +1920,6 @@ class Assets extends Table with TableInfo<Assets, AssetInDB> {
         'NOT NULL DEFAULT \'other\' CHECK (assetType IN (\'real_estate\', \'vehicle\', \'precious_metal\', \'jewelry_art\', \'other\'))',
     defaultValue: const CustomExpression('\'other\''),
   ).withConverter<AssetType>(Assets.$converterassetType);
-  static const VerificationMeta _linkedAccountIDMeta = const VerificationMeta(
-    'linkedAccountID',
-  );
-  late final GeneratedColumn<String> linkedAccountID = GeneratedColumn<String>(
-    'linkedAccountID',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    $customConstraints:
-        'REFERENCES accounts(id)ON UPDATE CASCADE ON DELETE SET NULL',
-  );
   static const VerificationMeta _linkedDebtIdMeta = const VerificationMeta(
     'linkedDebtId',
   );
@@ -1953,7 +1941,6 @@ class Assets extends Table with TableInfo<Assets, AssetInDB> {
     initialValue,
     creationDate,
     assetType,
-    linkedAccountID,
     linkedDebtId,
   ];
   @override
@@ -2018,15 +2005,6 @@ class Assets extends Table with TableInfo<Assets, AssetInDB> {
     } else if (isInserting) {
       context.missing(_creationDateMeta);
     }
-    if (data.containsKey('linkedAccountID')) {
-      context.handle(
-        _linkedAccountIDMeta,
-        linkedAccountID.isAcceptableOrUnknown(
-          data['linkedAccountID']!,
-          _linkedAccountIDMeta,
-        ),
-      );
-    }
     if (data.containsKey('linkedDebtId')) {
       context.handle(
         _linkedDebtIdMeta,
@@ -2075,10 +2053,6 @@ class Assets extends Table with TableInfo<Assets, AssetInDB> {
           data['${effectivePrefix}assetType'],
         )!,
       ),
-      linkedAccountID: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}linkedAccountID'],
-      ),
       linkedDebtId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}linkedDebtId'],
@@ -2116,9 +2090,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
   final DateTime creationDate;
   final AssetType assetType;
 
-  /// When set, this asset rolls into the linked account total (e.g. brokerage portfolio)
-  final String? linkedAccountID;
-
   /// Optional liability (e.g. a mortgage) linked to this physical asset
   final String? linkedDebtId;
   const AssetInDB({
@@ -2129,7 +2100,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
     required this.initialValue,
     required this.creationDate,
     required this.assetType,
-    this.linkedAccountID,
     this.linkedDebtId,
   });
   @override
@@ -2148,9 +2118,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
         Assets.$converterassetType.toSql(assetType),
       );
     }
-    if (!nullToAbsent || linkedAccountID != null) {
-      map['linkedAccountID'] = Variable<String>(linkedAccountID);
-    }
     if (!nullToAbsent || linkedDebtId != null) {
       map['linkedDebtId'] = Variable<String>(linkedDebtId);
     }
@@ -2168,9 +2135,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
       initialValue: Value(initialValue),
       creationDate: Value(creationDate),
       assetType: Value(assetType),
-      linkedAccountID: linkedAccountID == null && nullToAbsent
-          ? const Value.absent()
-          : Value(linkedAccountID),
       linkedDebtId: linkedDebtId == null && nullToAbsent
           ? const Value.absent()
           : Value(linkedDebtId),
@@ -2190,7 +2154,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
       initialValue: serializer.fromJson<double>(json['initialValue']),
       creationDate: serializer.fromJson<DateTime>(json['creationDate']),
       assetType: serializer.fromJson<AssetType>(json['assetType']),
-      linkedAccountID: serializer.fromJson<String?>(json['linkedAccountID']),
       linkedDebtId: serializer.fromJson<String?>(json['linkedDebtId']),
     );
   }
@@ -2205,7 +2168,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
       'initialValue': serializer.toJson<double>(initialValue),
       'creationDate': serializer.toJson<DateTime>(creationDate),
       'assetType': serializer.toJson<AssetType>(assetType),
-      'linkedAccountID': serializer.toJson<String?>(linkedAccountID),
       'linkedDebtId': serializer.toJson<String?>(linkedDebtId),
     };
   }
@@ -2218,7 +2180,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
     double? initialValue,
     DateTime? creationDate,
     AssetType? assetType,
-    Value<String?> linkedAccountID = const Value.absent(),
     Value<String?> linkedDebtId = const Value.absent(),
   }) => AssetInDB(
     id: id ?? this.id,
@@ -2228,9 +2189,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
     initialValue: initialValue ?? this.initialValue,
     creationDate: creationDate ?? this.creationDate,
     assetType: assetType ?? this.assetType,
-    linkedAccountID: linkedAccountID.present
-        ? linkedAccountID.value
-        : this.linkedAccountID,
     linkedDebtId: linkedDebtId.present ? linkedDebtId.value : this.linkedDebtId,
   );
   AssetInDB copyWithCompanion(AssetsCompanion data) {
@@ -2250,9 +2208,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
           ? data.creationDate.value
           : this.creationDate,
       assetType: data.assetType.present ? data.assetType.value : this.assetType,
-      linkedAccountID: data.linkedAccountID.present
-          ? data.linkedAccountID.value
-          : this.linkedAccountID,
       linkedDebtId: data.linkedDebtId.present
           ? data.linkedDebtId.value
           : this.linkedDebtId,
@@ -2269,7 +2224,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
           ..write('initialValue: $initialValue, ')
           ..write('creationDate: $creationDate, ')
           ..write('assetType: $assetType, ')
-          ..write('linkedAccountID: $linkedAccountID, ')
           ..write('linkedDebtId: $linkedDebtId')
           ..write(')'))
         .toString();
@@ -2284,7 +2238,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
     initialValue,
     creationDate,
     assetType,
-    linkedAccountID,
     linkedDebtId,
   );
   @override
@@ -2298,7 +2251,6 @@ class AssetInDB extends DataClass implements Insertable<AssetInDB> {
           other.initialValue == this.initialValue &&
           other.creationDate == this.creationDate &&
           other.assetType == this.assetType &&
-          other.linkedAccountID == this.linkedAccountID &&
           other.linkedDebtId == this.linkedDebtId);
 }
 
@@ -2310,7 +2262,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
   final Value<double> initialValue;
   final Value<DateTime> creationDate;
   final Value<AssetType> assetType;
-  final Value<String?> linkedAccountID;
   final Value<String?> linkedDebtId;
   final Value<int> rowid;
   const AssetsCompanion({
@@ -2321,7 +2272,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
     this.initialValue = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.assetType = const Value.absent(),
-    this.linkedAccountID = const Value.absent(),
     this.linkedDebtId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2333,7 +2283,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
     this.initialValue = const Value.absent(),
     required DateTime creationDate,
     this.assetType = const Value.absent(),
-    this.linkedAccountID = const Value.absent(),
     this.linkedDebtId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2348,7 +2297,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
     Expression<double>? initialValue,
     Expression<DateTime>? creationDate,
     Expression<String>? assetType,
-    Expression<String>? linkedAccountID,
     Expression<String>? linkedDebtId,
     Expression<int>? rowid,
   }) {
@@ -2360,7 +2308,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
       if (initialValue != null) 'initialValue': initialValue,
       if (creationDate != null) 'creationDate': creationDate,
       if (assetType != null) 'assetType': assetType,
-      if (linkedAccountID != null) 'linkedAccountID': linkedAccountID,
       if (linkedDebtId != null) 'linkedDebtId': linkedDebtId,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2374,7 +2321,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
     Value<double>? initialValue,
     Value<DateTime>? creationDate,
     Value<AssetType>? assetType,
-    Value<String?>? linkedAccountID,
     Value<String?>? linkedDebtId,
     Value<int>? rowid,
   }) {
@@ -2386,7 +2332,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
       initialValue: initialValue ?? this.initialValue,
       creationDate: creationDate ?? this.creationDate,
       assetType: assetType ?? this.assetType,
-      linkedAccountID: linkedAccountID ?? this.linkedAccountID,
       linkedDebtId: linkedDebtId ?? this.linkedDebtId,
       rowid: rowid ?? this.rowid,
     );
@@ -2418,9 +2363,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
         Assets.$converterassetType.toSql(assetType.value),
       );
     }
-    if (linkedAccountID.present) {
-      map['linkedAccountID'] = Variable<String>(linkedAccountID.value);
-    }
     if (linkedDebtId.present) {
       map['linkedDebtId'] = Variable<String>(linkedDebtId.value);
     }
@@ -2440,7 +2382,6 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
           ..write('initialValue: $initialValue, ')
           ..write('creationDate: $creationDate, ')
           ..write('assetType: $assetType, ')
-          ..write('linkedAccountID: $linkedAccountID, ')
           ..write('linkedDebtId: $linkedDebtId, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -11728,7 +11669,6 @@ abstract class _$AppDB extends GeneratedDatabase {
           row.read<String>('assetType'),
         ),
         description: row.readNullable<String>('description'),
-        linkedAccountID: row.readNullable<String>('linkedAccountID'),
         linkedDebtId: row.readNullable<String>('linkedDebtId'),
       ),
     );
@@ -12323,20 +12263,6 @@ abstract class _$AppDB extends GeneratedDatabase {
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'currencies',
-        limitUpdateKind: UpdateKind.update,
-      ),
-      result: [TableUpdate('assets', kind: UpdateKind.update)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'accounts',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('assets', kind: UpdateKind.update)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'accounts',
         limitUpdateKind: UpdateKind.update,
       ),
       result: [TableUpdate('assets', kind: UpdateKind.update)],
@@ -13457,24 +13383,6 @@ final class $AccountsReferences
     );
   }
 
-  static MultiTypedResultKey<Assets, List<AssetInDB>> _assetsRefsTable(
-    _$AppDB db,
-  ) => MultiTypedResultKey.fromTable(
-    db.assets,
-    aliasName: 'accounts__id__assets__linkedAccountID',
-  );
-
-  $AssetsProcessedTableManager get assetsRefs {
-    final manager = $AssetsTableManager($_db, $_db.assets).filter(
-      (f) => f.linkedAccountID.id.sqlEquals($_itemColumn<String>('id')!),
-    );
-
-    final cache = $_typedResult.readTableOrNull(_assetsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
   static MultiTypedResultKey<Holdings, List<HoldingInDB>> _holdingsRefsTable(
     _$AppDB db,
   ) => MultiTypedResultKey.fromTable(
@@ -13620,31 +13528,6 @@ class $AccountsFilterComposer extends Composer<_$AppDB, Accounts> {
           ),
     );
     return composer;
-  }
-
-  Expression<bool> assetsRefs(
-    Expression<bool> Function($AssetsFilterComposer f) f,
-  ) {
-    final $AssetsFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.assets,
-      getReferencedColumn: (t) => t.linkedAccountID,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $AssetsFilterComposer(
-            $db: $db,
-            $table: $db.assets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
   }
 
   Expression<bool> holdingsRefs(
@@ -13882,31 +13765,6 @@ class $AccountsAnnotationComposer extends Composer<_$AppDB, Accounts> {
     return composer;
   }
 
-  Expression<T> assetsRefs<T extends Object>(
-    Expression<T> Function($AssetsAnnotationComposer a) f,
-  ) {
-    final $AssetsAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.assets,
-      getReferencedColumn: (t) => t.linkedAccountID,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $AssetsAnnotationComposer(
-            $db: $db,
-            $table: $db.assets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<T> holdingsRefs<T extends Object>(
     Expression<T> Function($HoldingsAnnotationComposer a) f,
   ) {
@@ -13973,7 +13831,6 @@ class $AccountsTableManager
           AccountInDB,
           PrefetchHooks Function({
             bool currencyId,
-            bool assetsRefs,
             bool holdingsRefs,
             bool accountSnapshotsRefs,
           })
@@ -14069,14 +13926,12 @@ class $AccountsTableManager
           prefetchHooksCallback:
               ({
                 currencyId = false,
-                assetsRefs = false,
                 holdingsRefs = false,
                 accountSnapshotsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
-                    if (assetsRefs) db.assets,
                     if (holdingsRefs) db.holdings,
                     if (accountSnapshotsRefs) db.accountSnapshots,
                   ],
@@ -14114,24 +13969,6 @@ class $AccountsTableManager
                       },
                   getPrefetchedDataCallback: (items) async {
                     return [
-                      if (assetsRefs)
-                        await $_getPrefetchedData<
-                          AccountInDB,
-                          Accounts,
-                          AssetInDB
-                        >(
-                          currentTable: table,
-                          referencedTable: $AccountsReferences._assetsRefsTable(
-                            db,
-                          ),
-                          managerFromTypedResult: (p0) =>
-                              $AccountsReferences(db, table, p0).assetsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.linkedAccountID == item.id,
-                              ),
-                          typedResults: items,
-                        ),
                       if (holdingsRefs)
                         await $_getPrefetchedData<
                           AccountInDB,
@@ -14191,7 +14028,6 @@ typedef $AccountsProcessedTableManager =
       AccountInDB,
       PrefetchHooks Function({
         bool currencyId,
-        bool assetsRefs,
         bool holdingsRefs,
         bool accountSnapshotsRefs,
       })
@@ -14758,7 +14594,6 @@ typedef $AssetsCreateCompanionBuilder =
       Value<double> initialValue,
       required DateTime creationDate,
       Value<AssetType> assetType,
-      Value<String?> linkedAccountID,
       Value<String?> linkedDebtId,
       Value<int> rowid,
     });
@@ -14771,7 +14606,6 @@ typedef $AssetsUpdateCompanionBuilder =
       Value<double> initialValue,
       Value<DateTime> creationDate,
       Value<AssetType> assetType,
-      Value<String?> linkedAccountID,
       Value<String?> linkedDebtId,
       Value<int> rowid,
     });
@@ -14791,23 +14625,6 @@ final class $AssetsReferences
       $_db.currencies,
     ).filter((f) => f.code.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_currencyIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static Accounts _linkedAccountIDTable(_$AppDB db) =>
-      db.accounts.createAlias('assets__linkedAccountID__accounts__id');
-
-  $AccountsProcessedTableManager? get linkedAccountID {
-    final $_column = $_itemColumn<String>('linkedAccountID');
-    if ($_column == null) return null;
-    final manager = $AccountsTableManager(
-      $_db,
-      $_db.accounts,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_linkedAccountIDTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -14921,29 +14738,6 @@ class $AssetsFilterComposer extends Composer<_$AppDB, Assets> {
           }) => $CurrenciesFilterComposer(
             $db: $db,
             $table: $db.currencies,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $AccountsFilterComposer get linkedAccountID {
-    final $AccountsFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.linkedAccountID,
-      referencedTable: $db.accounts,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $AccountsFilterComposer(
-            $db: $db,
-            $table: $db.accounts,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -15088,29 +14882,6 @@ class $AssetsOrderingComposer extends Composer<_$AppDB, Assets> {
     return composer;
   }
 
-  $AccountsOrderingComposer get linkedAccountID {
-    final $AccountsOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.linkedAccountID,
-      referencedTable: $db.accounts,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $AccountsOrderingComposer(
-            $db: $db,
-            $table: $db.accounts,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
   $DebtsOrderingComposer get linkedDebtId {
     final $DebtsOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -15181,29 +14952,6 @@ class $AssetsAnnotationComposer extends Composer<_$AppDB, Assets> {
           }) => $CurrenciesAnnotationComposer(
             $db: $db,
             $table: $db.currencies,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $AccountsAnnotationComposer get linkedAccountID {
-    final $AccountsAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.linkedAccountID,
-      referencedTable: $db.accounts,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $AccountsAnnotationComposer(
-            $db: $db,
-            $table: $db.accounts,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -15302,7 +15050,6 @@ class $AssetsTableManager
           AssetInDB,
           PrefetchHooks Function({
             bool currencyId,
-            bool linkedAccountID,
             bool linkedDebtId,
             bool valuationsRefs,
             bool transactionsRefs,
@@ -15328,7 +15075,6 @@ class $AssetsTableManager
                 Value<double> initialValue = const Value.absent(),
                 Value<DateTime> creationDate = const Value.absent(),
                 Value<AssetType> assetType = const Value.absent(),
-                Value<String?> linkedAccountID = const Value.absent(),
                 Value<String?> linkedDebtId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetsCompanion(
@@ -15339,7 +15085,6 @@ class $AssetsTableManager
                 initialValue: initialValue,
                 creationDate: creationDate,
                 assetType: assetType,
-                linkedAccountID: linkedAccountID,
                 linkedDebtId: linkedDebtId,
                 rowid: rowid,
               ),
@@ -15352,7 +15097,6 @@ class $AssetsTableManager
                 Value<double> initialValue = const Value.absent(),
                 required DateTime creationDate,
                 Value<AssetType> assetType = const Value.absent(),
-                Value<String?> linkedAccountID = const Value.absent(),
                 Value<String?> linkedDebtId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetsCompanion.insert(
@@ -15363,7 +15107,6 @@ class $AssetsTableManager
                 initialValue: initialValue,
                 creationDate: creationDate,
                 assetType: assetType,
-                linkedAccountID: linkedAccountID,
                 linkedDebtId: linkedDebtId,
                 rowid: rowid,
               ),
@@ -15373,7 +15116,6 @@ class $AssetsTableManager
           prefetchHooksCallback:
               ({
                 currencyId = false,
-                linkedAccountID = false,
                 linkedDebtId = false,
                 valuationsRefs = false,
                 transactionsRefs = false,
@@ -15410,19 +15152,6 @@ class $AssetsTableManager
                                     referencedColumn: $AssetsReferences
                                         ._currencyIdTable(db)
                                         .code,
-                                  )
-                                  as T;
-                        }
-                        if (linkedAccountID) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.linkedAccountID,
-                                    referencedTable: $AssetsReferences
-                                        ._linkedAccountIDTable(db),
-                                    referencedColumn: $AssetsReferences
-                                        ._linkedAccountIDTable(db)
-                                        .id,
                                   )
                                   as T;
                         }
@@ -15500,7 +15229,6 @@ typedef $AssetsProcessedTableManager =
       AssetInDB,
       PrefetchHooks Function({
         bool currencyId,
-        bool linkedAccountID,
         bool linkedDebtId,
         bool valuationsRefs,
         bool transactionsRefs,

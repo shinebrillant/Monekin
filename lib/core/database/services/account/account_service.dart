@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:monekin/core/database/app_db.dart';
-import 'package:monekin/core/database/services/account/asset_valuation_service.dart';
 import 'package:monekin/core/database/services/account/holding_service.dart';
 import 'package:monekin/core/database/services/exchange-rate/exchange_rate_service.dart';
 import 'package:monekin/core/database/services/transaction/transaction_service.dart';
@@ -85,50 +84,6 @@ class AccountService {
       AS $columnName ON $accountTableName.currencyId = $columnName.currencyCode
     ''';
 
-  Stream<List<String>> _watchInvestmentAccountIds({
-    Iterable<String>? accountIds,
-  }) {
-    if (accountIds == null) {
-      return db
-          .select(db.accounts)
-          .watch()
-          .map(
-            (rows) => rows
-                .where((r) => r.type == AccountType.investment)
-                .map((r) => r.id)
-                .toList(),
-          );
-    }
-    final query = db.select(db.accounts)
-      ..where(
-        (a) =>
-            a.type.equals(AccountType.investment.name) &
-            a.id.isIn(accountIds.toList()),
-      );
-    return query.watch().map((rows) => rows.map((r) => r.id).toList());
-  }
-
-  Stream<double> _linkedPortfolioMarketAggregate({
-    required DateTime date,
-    Iterable<String>? accountIds,
-    required bool convertToPreferredCurrency,
-  }) {
-    return _watchInvestmentAccountIds(accountIds: accountIds).switchMap((ids) {
-      if (ids.isEmpty) return Stream.value(0.0);
-      final streams = ids.map(
-        (id) =>
-            AssetValuationService.instance.streamLinkedAssetsTotalForAccount(
-              id,
-              date: date,
-              convertToPreferredCurrency: convertToPreferredCurrency,
-            ),
-      );
-      return Rx.combineLatestList(
-        streams.toList(),
-      ).map((values) => values.fold<double>(0, (a, b) => a + b));
-    });
-  }
-
   /// Get the amount of money that an account has in a certain period of time,
   /// specified in the [date] param. If the [date] param is null, it will return
   /// the money of the account right now.
@@ -187,13 +142,6 @@ class AccountService {
       exchDate: date,
     );
 
-    final linked = AssetValuationService.instance
-        .streamLinkedAssetsTotalForAccount(
-          account.id,
-          date: date,
-          convertToPreferredCurrency: convertToPreferredCurrency,
-        );
-
     final holdings = HoldingService.instance.getHoldingsMarketValue(
       accountIds: [account.id],
       convertToPreferred: convertToPreferredCurrency,
@@ -203,13 +151,12 @@ class AccountService {
       date: date,
     );
 
-    return Rx.combineLatest4(
+    return Rx.combineLatest3(
       iniStream,
       ledgerTx,
-      linked,
       holdings,
-      (double ini, double ledger, double l, double h) => (ini + ledger + l + h)
-          .roundWithDecimals(account.currency.decimalPlaces),
+      (double ini, double ledger, double h) =>
+          (ini + ledger + h).roundWithDecimals(account.currency.decimalPlaces),
     );
   }
 
@@ -220,9 +167,9 @@ class AccountService {
   /// If the [accountIds] param is not specified, the function will return the money of
   /// all the user accounts (closed or not).
   ///
-  /// Each account contributes **cash ledger** (income, expense, transfers, and
-  /// investment-type rows) plus **linked asset** market value (assets whose
-  /// `linkedAccountID` points at that account).
+  /// Each account contributes its opening balance, its **cash ledger** (income,
+  /// expense, transfers, and investment-type rows) and the market value of its
+  /// **holdings**.
   ///
   /// You can add filters for the transactions that will be taken into account to calculate
   /// this balance, via the [trFilters] param. We will overwrite the accountsIds and the maxDate
@@ -293,25 +240,17 @@ class AccountService {
           exchDate: date,
         );
 
-    final linkedPortfolioMarket = _linkedPortfolioMarketAggregate(
-      date: date,
-      accountIds: accountIds,
-      convertToPreferredCurrency: convertToPreferredCurrency,
-    );
-
     final holdingsMarket = HoldingService.instance.getHoldingsMarketValue(
       accountIds: accountIds,
       convertToPreferred: convertToPreferredCurrency,
       date: date,
     );
 
-    return Rx.combineLatest4(
+    return Rx.combineLatest3(
       allAccountsInitialAmount,
       allAccountsTransactionsBalance,
-      linkedPortfolioMarket,
       holdingsMarket,
-      (double ini, double tr, double linked, double holdings) =>
-          ini + tr + linked + holdings,
+      (double ini, double tr, double holdings) => ini + tr + holdings,
     );
   }
 

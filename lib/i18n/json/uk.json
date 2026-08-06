@@ -979,7 +979,6 @@
       "already_exists": "Об’єкт із такою назвою вже існує. Ви можете відредагувати його",
       "valuation_before_creation_date": "У цьому активі є оцінки з датою, що передує даті придбання",
       "acquisition_date": "Дата створення",
-      "creation_date_before_linked_account": "The asset date cannot be before the linked account creation date",
       "linked_liability": "Пов'язана відповідальність",
       "link_existing_liability": "Пов’язати існуючу відповідальність",
       "no_liabilities": "Ви ще не маєте зобов'язань.",

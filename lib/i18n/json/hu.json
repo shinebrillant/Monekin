@@ -979,7 +979,6 @@
       "already_exists": "Már létezik ilyen nevű tartalom. Érdemes lehet szerkeszteni",
       "valuation_before_creation_date": "Ezen az eszközön vannak olyan értékelések, amelyek dátuma az akvizíció időpontja előtti",
       "acquisition_date": "Létrehozás dátuma",
-      "creation_date_before_linked_account": "The asset date cannot be before the linked account creation date",
       "linked_liability": "Kapcsolódó felelősség",
       "link_existing_liability": "Kapcsolja össze a meglévő felelősséget",
       "no_liabilities": "Önnek még nincsenek kötelezettségei.",

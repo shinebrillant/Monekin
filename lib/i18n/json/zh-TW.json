@@ -979,7 +979,6 @@
       "already_exists": "具有此名稱的資產已存在。您可能想要編輯它",
       "valuation_before_creation_date": "該資產的估值日期早於收購日期",
       "acquisition_date": "建立日期",
-      "creation_date_before_linked_account": "The asset date cannot be before the linked account creation date",
       "linked_liability": "連帶責任",
       "link_existing_liability": "連結現有責任",
       "no_liabilities": "您還沒有任何負債。",

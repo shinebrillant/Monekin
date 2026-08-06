@@ -11,7 +11,6 @@ class Asset extends AssetInDB {
     required this.currency,
     required super.assetType,
     super.description,
-    super.linkedAccountID,
     super.linkedDebtId,
   }) : super(currencyId: currency.code);
 
@@ -23,7 +22,6 @@ class Asset extends AssetInDB {
     currency: currency,
     description: asset.description,
     assetType: asset.assetType,
-    linkedAccountID: asset.linkedAccountID,
     linkedDebtId: asset.linkedDebtId,
   );
 }

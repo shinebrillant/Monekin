@@ -47,34 +47,21 @@ class NetWorthCompositionCard extends StatelessWidget {
                 date: date,
               )
               .first,
-          AssetValuationService.instance
-              .streamLinkedAssetsTotalForAccount(
-                account.id,
-                date: date,
-                convertToPreferredCurrency: true,
-              )
-              .first,
         ]);
 
         final accountTotal = values[0];
         final holdings = values[1];
-        final linkedAssets = values[2];
         return (
           cash: _BreakdownItem(
             title: account.name,
-            amount: accountTotal - holdings - linkedAssets,
+            amount: accountTotal - holdings,
           ),
-          investments: _BreakdownItem(
-            title: account.name,
-            amount: holdings + linkedAssets,
-          ),
+          investments: _BreakdownItem(title: account.name, amount: holdings),
         );
       }),
     );
 
-    final assets = await AssetService.instance
-        .getAssets(predicate: (a, curr) => a.linkedAccountID.isNull())
-        .first;
+    final assets = await AssetService.instance.getAssets().first;
     final assetItems = await Future.wait(
       assets.map((asset) async {
         final value = await AssetValuationService.instance
