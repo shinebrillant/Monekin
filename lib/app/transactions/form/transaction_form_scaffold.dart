@@ -6,6 +6,7 @@ import 'package:monekin/app/transactions/form/widgets/transaction_account_catego
 import 'package:monekin/app/transactions/form/widgets/transaction_form_amount_block.dart';
 import 'package:monekin/app/transactions/form/widgets/transaction_form_details_sections.dart';
 import 'package:monekin/app/transactions/form/widgets/transaction_form_dual_leg_amount_section.dart';
+import 'package:monekin/app/transactions/form/widgets/transaction_form_security_trade_section.dart';
 import 'package:monekin/app/transactions/form/widgets/transaction_form_type_selector.dart';
 import 'package:monekin/core/extensions/color.extensions.dart';
 import 'package:monekin/core/presentation/responsive/breakpoint_container.dart';
@@ -36,6 +37,15 @@ class TransactionFormScaffold extends StatelessWidget {
               12,
             ),
           )
+        : c.isSecurityTradeInvestment
+        ? TransactionFormSecurityTradeSection(
+            padding: EdgeInsets.fromLTRB(
+              dualHorizontalPadding,
+              0,
+              dualHorizontalPadding,
+              12,
+            ),
+          )
         : const TransactionFormAmountBlock();
 
     final lgLeadingColumn = _paddedColumn(
@@ -45,7 +55,7 @@ class TransactionFormScaffold extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 24,
           children: [
-            if (!c.isAssetTradeInvestment)
+            if (!c.isSecurityTradeInvestment)
               const TransactionFormTypeSelector(padding: EdgeInsets.zero),
             amountOrDual,
           ],
@@ -78,14 +88,16 @@ class TransactionFormScaffold extends StatelessWidget {
       ),
     ];
 
-    final saveLabel = c.isAssetTradeInvestment
-        ? (c.investmentIsBuy ? t.assets.details.buy : t.assets.details.sell)
+    final saveLabel = c.isSecurityTradeInvestment
+        ? (c.securityTradeIsBuy
+              ? t.assets.holdings.buy
+              : t.assets.holdings.sell)
         : c.isEditMode
         ? t.transaction.edit
         : '${t.ui_actions.save} ${c.transactionType.displayName(context)}';
 
-    final saveButtonColor = c.isAssetTradeInvestment
-        ? c.investmentAccent(context)
+    final saveButtonColor = c.isSecurityTradeInvestment
+        ? c.tradeAccent(context)
         : c.transactionType.color(context);
 
     return PageFramework(
@@ -108,7 +120,7 @@ class TransactionFormScaffold extends StatelessWidget {
       body: Form(
         key: c.formKey,
         child: BreakpointContainer(
-          lgChild: Row(
+          lgBuilder: (context) => Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(flex: 4, child: lgLeadingColumn),
@@ -120,10 +132,10 @@ class TransactionFormScaffold extends StatelessWidget {
               Expanded(flex: 6, child: lgTrailingColumn),
             ],
           ),
-          child: Column(
+          builder: (context) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (!c.isAssetTradeInvestment)
+              if (!c.isSecurityTradeInvestment)
                 const Padding(
                   padding: EdgeInsets.fromLTRB(16, 12, 16, 14),
                   child: TransactionFormTypeSelector(padding: EdgeInsets.zero),

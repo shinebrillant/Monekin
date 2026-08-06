@@ -197,6 +197,7 @@ Consume via `TransactionService.instance.getTransactions(...)`. The same `._()` 
 - **Theming**: use `Theme.of(context)` / `getThemeData(...)`; don't hardcode colors.
 - **Responsive**: use helpers in `lib/core/presentation/responsive/` (`BreakPoint`, responsive row/column) and `AppUtils.isMobileLayout(context)`.
 - **Feedback**: use the shared snackbar helpers, not raw `ScaffoldMessenger`.
+- **Segmented controls**: use `ExpandingSegmentedTabs`/`SegmentedTabItem` (`lib/core/presentation/widgets/expanding_segmented_tabs.dart`) instead of Flutter's `SegmentedButton`/`ButtonSegment`. It adapts to narrow screens (collapsing unselected segments to just their icon instead of truncating labels) and hugs its content width when `fullWidth: false` is passed, unlike the native widget.
 
 ### Adding / editing translations
 
