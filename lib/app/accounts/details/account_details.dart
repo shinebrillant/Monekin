@@ -864,8 +864,10 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
         ),
     ];
 
+    final showTabs = items.length > 1;
+
     final content = switch (selected) {
-      _DetailTab.movements => _buildMovements(account),
+      _DetailTab.movements => _buildMovements(account, topGap: showTabs),
       _DetailTab.info => _buildInfo(account),
       _DetailTab.holdings =>
         account.trackingMode == AccountTrackingMode.holdings
@@ -876,7 +878,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (items.length > 1)
+        if (showTabs)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ExpandingSegmentedTabs<_DetailTab>(
@@ -893,7 +895,11 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     );
   }
 
-  Widget _buildMovements(Account account) {
+  /// [topGap] adds the spacing normally left below the tab bar. It's
+  /// disabled when this section is shown standalone (e.g. the desktop body
+  /// for non-investment accounts, where there is no tab bar), so it aligns
+  /// with the info card next to it instead of sitting slightly lower.
+  Widget _buildMovements(Account account, {bool topGap = true}) {
     const transactionsToShow = 8;
 
     final filters = TransactionFilterSet(
@@ -906,7 +912,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
 
     return Column(
       children: [
-        const SizedBox(height: 16),
+        if (topGap) const SizedBox(height: 16),
         CardWithHeader(
           title: t.home.last_transactions,
           bodyPadding: const EdgeInsets.symmetric(vertical: 6),

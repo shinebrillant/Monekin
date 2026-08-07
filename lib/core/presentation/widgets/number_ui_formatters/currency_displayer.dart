@@ -124,10 +124,10 @@ class BlurBasedOnPrivateMode extends StatelessWidget {
       builder: (context, snapshot) {
         final isInPrivateMode = snapshot.data ?? false;
 
-        final double sigma = isInPrivateMode ? 7.5 : 0;
+        if (!isInPrivateMode) return child;
 
         return ImageFiltered(
-          imageFilter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+          imageFilter: ImageFilter.blur(sigmaX: 7.5, sigmaY: 7.5),
           child: child,
         );
       },

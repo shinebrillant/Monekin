@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:monekin/core/presentation/widgets/simple_shadow.dart';
 
 part 'supported_icon.g.dart';
 
@@ -31,19 +28,13 @@ class SupportedIcon {
     return SizedBox(
       height: size,
       width: size,
-      child: SimpleShadow(
-        opacity: 0.55,
-        sigma: min(size / 50, 0.6),
-        offset: const Offset(0, 0),
-        color: Colors.black,
-        child: SvgPicture.asset(
-          urlToAssets,
-          height: size,
-          width: size,
-          colorFilter: color != null
-              ? ColorFilter.mode(color, BlendMode.srcIn)
-              : null,
-        ),
+      child: SvgPicture.asset(
+        urlToAssets,
+        height: size,
+        width: size,
+        colorFilter: color != null
+            ? ColorFilter.mode(color, BlendMode.srcIn)
+            : null,
       ),
     );
   }
