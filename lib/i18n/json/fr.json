@@ -540,6 +540,9 @@
     "FORM": {
       "name": "Nom du compte",
       "name.placeholder": "Ex : Compte épargne",
+      "group": "Groupe",
+      "group.placeholder": "Ex : Ma banque",
+      "group.descr": "Les comptes du même groupe sont affichés ensemble",
       "notes": "Notes",
       "notes.placeholder": "Saisissez des notes/une description à propos de ce compte",
       "initial-balance": "Solde initial",
@@ -587,6 +590,12 @@
     "no_income_range": "Aucun revenu cette période",
     "no_expense_range": "Aucune dépense cette période",
     "movements_count": "{{n}} mouvements",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} compte",
+        "other": "{{n}} comptes"
+      }
+    },
     "TABS": {
       "movements": "Mouvements",
       "info": "Info"

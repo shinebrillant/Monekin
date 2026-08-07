@@ -540,6 +540,9 @@
     "FORM": {
       "name": "Kontoname",
       "name.placeholder": "Beispiel: Sparkonto",
+      "group": "Gruppe",
+      "group.placeholder": "Z. B.: Meine Bank",
+      "group.descr": "Konten mit derselben Gruppe werden zusammen angezeigt",
       "notes": "Notizen",
       "notes.placeholder": "Gebe einige Notizen/Beschreibungen zu diesem Konto ein",
       "initial-balance": "Anfangssaldo",
@@ -587,6 +590,12 @@
     "no_income_range": "In diesem Zeitraum kein Einkommen",
     "no_expense_range": "In diesem Zeitraum fallen keine Kosten an",
     "movements_count": "{{n}} Bewegungen",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} Konto",
+        "other": "{{n}} Konten"
+      }
+    },
     "TABS": {
       "movements": "Bewegungen",
       "info": "Info"

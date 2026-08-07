@@ -540,6 +540,9 @@
     "FORM": {
       "name": "Számla neve",
       "name.placeholder": "Pl.: Megtakarítási számla",
+      "group": "Csoport",
+      "group.placeholder": "Pl.: A bankom",
+      "group.descr": "Az azonos csoportba tartozó számlák együtt jelennek meg",
       "notes": "Megjegyzések",
       "notes.placeholder": "Írjon néhány megjegyzést/leírást erről a számláról.",
       "initial-balance": "Kezdőegyenleg",
@@ -587,6 +590,12 @@
     "no_income_range": "Ebben az időszakban nincs bevétel",
     "no_expense_range": "Ebben az időszakban nincs kiadás",
     "movements_count": "{{n}} mozgások",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} számla",
+        "other": "{{n}} számla"
+      }
+    },
     "TABS": {
       "movements": "Mozdulatok",
       "info": "Info"

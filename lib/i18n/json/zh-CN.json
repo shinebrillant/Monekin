@@ -540,6 +540,9 @@
     "FORM": {
       "name": "账户名称",
       "name.placeholder": "例如：储蓄账户",
+      "group": "分组",
+      "group.placeholder": "例如：我的银行",
+      "group.descr": "同一分组的账户会一起显示",
       "notes": "备注",
       "notes.placeholder": "输入有关此账户的一些备注/描述",
       "initial-balance": "初始余额",
@@ -587,6 +590,12 @@
     "no_income_range": "本期无收入",
     "no_expense_range": "本期无费用",
     "movements_count": "{{n}} 个动作",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} 个账户",
+        "other": "{{n}} 个账户"
+      }
+    },
     "TABS": {
       "movements": "动作",
       "info": "Info"

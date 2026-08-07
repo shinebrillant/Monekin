@@ -540,6 +540,9 @@
     "FORM": {
       "name": "帳戶名稱",
       "name.placeholder": "例如：儲蓄帳戶",
+      "group": "群組",
+      "group.placeholder": "例如：我的銀行",
+      "group.descr": "相同群組的帳戶會一起顯示",
       "notes": "筆記",
       "notes.placeholder": "輸入有關此帳戶的一些註釋/描述",
       "initial-balance": "初始餘額",
@@ -587,6 +590,12 @@
     "no_income_range": "本期無收入",
     "no_expense_range": "本期無費用",
     "movements_count": "{{n}} 個動作",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} 個帳戶",
+        "other": "{{n}} 個帳戶"
+      }
+    },
     "TABS": {
       "movements": "動作",
       "info": "Info"

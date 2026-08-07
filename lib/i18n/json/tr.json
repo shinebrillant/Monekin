@@ -540,6 +540,9 @@
     "FORM": {
       "name": "Hesap adı",
       "name.placeholder": "Örn: Tasarruf hesabı",
+      "group": "Grup",
+      "group.placeholder": "Örn: Bankam",
+      "group.descr": "Aynı gruba sahip hesaplar birlikte gösterilir",
       "notes": "Notlar",
       "notes.placeholder": "Bu hesap hakkında bazı notlar/açıklama yazın",
       "initial-balance": "Başlangıç ​​bakiyesi",
@@ -587,6 +590,12 @@
     "no_income_range": "Bu dönemde gelir yok",
     "no_expense_range": "Bu dönemde masraf yok",
     "movements_count": "{{n}} hareketler",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} hesap",
+        "other": "{{n}} hesap"
+      }
+    },
     "TABS": {
       "movements": "Hareketler",
       "info": "Info"

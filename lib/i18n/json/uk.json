@@ -540,6 +540,9 @@
     "FORM": {
       "name": "Назва рахунку",
       "name.placeholder": "Наприклад: Зберігаючий рахунок",
+      "group": "Група",
+      "group.placeholder": "Напр.: Мій банк",
+      "group.descr": "Рахунки з однаковою групою відображаються разом",
       "notes": "Примітки",
       "notes.placeholder": "Введіть примітки/опис про цей рахунок",
       "initial-balance": "Початковий баланс",
@@ -587,6 +590,12 @@
     "no_income_range": "У цей період доходів немає",
     "no_expense_range": "Жодних витрат у цей період",
     "movements_count": "{{n}} рухів",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} рахунок",
+        "other": "{{n}} рахунки"
+      }
+    },
     "TABS": {
       "movements": "Рухи",
       "info": "Info"
