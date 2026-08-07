@@ -173,7 +173,7 @@ void main() {
     expect(holdings, isEmpty, reason: 'unlinked security must have no holding');
 
     final priceHistory = db.select(
-      'SELECT 1 FROM securityPriceHistory WHERE securityID = ?',
+      'SELECT 1 FROM securityPrices WHERE securityID = ?',
       [securityId],
     );
     expect(priceHistory, isNotEmpty, reason: 'its valuations become price points');
@@ -196,7 +196,7 @@ void main() {
     expect((sec.first['currentPrice'] as num).toDouble(), 500);
 
     final points = db.select(
-      'SELECT price FROM securityPriceHistory WHERE securityID = ?',
+      'SELECT price FROM securityPrices WHERE securityID = ?',
       [securityId],
     );
     expect(points.length, 1, reason: 'exactly one seed point');

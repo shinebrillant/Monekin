@@ -29,7 +29,7 @@ HOLDING ──────► SECURITY  (stock | fund | crypto)
                 └─ taxonomy assignments         ← asset class, region, industry, risk
 
 ASSET  (real estate | vehicle | precious metal | jewelry & art | other)
-├─ valuations                   ← what it was worth at a given date
+├─ asset valuations             ← what it was worth at a given date
 └─ linked debt (optional)       ← net value = value − debt remaining
 ```
 
@@ -44,12 +44,12 @@ The single most important idea: **assets and securities are different things**. 
 | **Account** | Where your money lives | `accounts` |
 | **Tracking mode** | How an investment account knows what it holds | `accounts.trackingMode` |
 | **Security** | A tradable instrument: a stock, a fund/ETF, a crypto coin | `securities` |
-| **Price history** | What a security was worth on a given day | `securityPriceHistory` |
+| **Price history** | What a security was worth on a given day | `securityPrices` |
 | **Holding** | *You* own N units of a security in a given account | `holdings` |
 | **Trade** | A buy or a sell that moved cash and changed a holding | `transactions` (type `N`) |
 | **Snapshot** | A photo of an account's whole portfolio on a date | `accountSnapshots` + `holdingSnapshots` |
 | **Asset** | A physical thing you own: a flat, a car, gold | `assets` |
-| **Valuation** | What an asset was worth on a given day | `valuations` |
+| **Valuation** | What an asset was worth on a given day | `assetValuations` |
 | **Classification** | How a security is labelled for portfolio reporting | `taxonomies`, `taxonomyCategories`, `securityTaxonomyAssignments` |
 
 ### 2.1 Account
@@ -85,7 +85,7 @@ Every price you record for a security is kept as a dated observation, which is w
 
 Prices are entered manually (Monekin is offline-first), either one at a time or by importing a CSV. Editing history retroactively changes every past chart and statistic that depends on it — that is the point.
 
-> **Implementation:** `securityPriceHistory`. The price used at date *t* is the latest row with `date <= t`, falling back to `securities.currentPrice`.
+> **Implementation:** `securityPrices`. The price used at date *t* is the latest row with `date <= t`, falling back to `securities.currentPrice`.
 
 ### 2.5 Holding
 
@@ -138,7 +138,7 @@ Buying an asset is usually recorded as a normal expense transaction linked to it
 
 The asset equivalent of a price observation: what the asset was worth on a date. The value at date *t* is the latest valuation on or before *t*, or the initial value if there is none, or 0 before the asset existed.
 
-> **Implementation:** `valuations`, unique on `assetId` + `date`. See §2 of [BALANCE_FORMULAS.md](./BALANCE_FORMULAS.md).
+> **Implementation:** `assetValuations`, unique on `assetId` + `date`. See §2 of [BALANCE_FORMULAS.md](./BALANCE_FORMULAS.md).
 
 ### 2.10 Classification (taxonomies)
 
@@ -218,11 +218,11 @@ This does not compromise the offline-first promise: requests only happen while y
 | --- | --- | --- |
 | `accounts` | `AccountInDB` / `Account` | `AccountService` |
 | `securities` | `SecurityInDB` | `SecurityService` |
-| `securityPriceHistory` | `SecurityPriceHistoryInDB` | `SecurityService` |
+| `securityPrices` | `SecurityPriceInDB` | `SecurityService` |
 | `holdings` | `HoldingInDB` / `HoldingWithSecurity` | `HoldingService` |
 | `accountSnapshots` + `holdingSnapshots` | `AccountSnapshotWithPositions`, `SnapshotPosition` | `HoldingService` |
 | `assets` | `AssetInDB` / `Asset` | `AssetService` |
-| `valuations` | `ValuationInDB` | `AssetValuationService` |
+| `assetValuations` | `AssetValuationInDB` | `AssetValuationService` |
 | `taxonomies`, `taxonomyCategories`, `securityTaxonomyAssignments` | `TaxonomyInDB`, `TaxonomyCategoryInDB`, `SecurityTaxonomyAssignmentInDB` | `TaxonomyService` |
 | `transactions` (type `N`) | `TransactionInDB` | `TransactionService`, `HoldingService` |
 

@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:monekin/core/database/app_db.dart';
+import 'package:monekin/core/database/utils/converters/date_converters.dart';
 import 'package:monekin/core/utils/uuid.dart';
 
 /// CRUD and manual price updates for [securities] (shared financial instruments).
@@ -63,8 +64,8 @@ class SecurityService {
   }
 
   /// Historical price observations for a security, oldest first.
-  Stream<List<SecurityPriceHistoryInDB>> getPriceHistory(String securityId) {
-    return (db.select(db.securityPriceHistory)
+  Stream<List<SecurityPriceInDB>> getPriceHistory(String securityId) {
+    return (db.select(db.securityPrices)
           ..where((tbl) => tbl.securityID.equals(securityId))
           ..orderBy([(tbl) => OrderingTerm.asc(tbl.date)]))
         .watch();
@@ -75,11 +76,11 @@ class SecurityService {
   /// there is no earlier observation. Returns 0 when nothing is known.
   Future<double> getPriceAtDate(String securityId, DateTime date) async {
     final point =
-        await (db.select(db.securityPriceHistory)
+        await (db.select(db.securityPrices)
               ..where(
                 (tbl) =>
                     tbl.securityID.equals(securityId) &
-                    tbl.date.isSmallerOrEqualValue(date),
+                    tbl.date.isSmallerOrEqualValue(_toSqlDay(date)),
               )
               ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)])
               ..limit(1))
@@ -95,9 +96,9 @@ class SecurityService {
   /// security's current price).
   Future<void> addPricePoint(String securityId, double price, DateTime date) {
     return db
-        .into(db.securityPriceHistory)
+        .into(db.securityPrices)
         .insert(
-          SecurityPriceHistoryInDB(
+          SecurityPriceInDB(
             id: generateUUID(),
             securityID: securityId,
             date: date,
@@ -108,8 +109,32 @@ class SecurityService {
 
   /// Inserts or updates a price-history observation and keeps the security's
   /// current price/date aligned with the most recent point.
-  Future<void> upsertPricePoint(SecurityPriceHistoryInDB point) async {
-    await db.into(db.securityPriceHistory).insertOnConflictUpdate(point);
+  ///
+  /// A security holds a single observation per calendar day (enforced by the
+  /// `idx_securityPrices_securityID_date` unique index): saving onto a
+  /// day that already has a price overwrites its value.
+  Future<void> upsertPricePoint(SecurityPriceInDB point) async {
+    await db.transaction(() async {
+      // Drop this point's previous row first so that editing it — including
+      // moving it to another day — never leaves a stale duplicate behind.
+      await (db.delete(
+        db.securityPrices,
+      )..where((tbl) => tbl.id.equals(point.id))).go();
+
+      await db
+          .into(db.securityPrices)
+          .insert(
+            point,
+            onConflict: DoUpdate(
+              (_) => SecurityPricesCompanion(price: Value(point.price)),
+              target: [
+                db.securityPrices.securityID,
+                db.securityPrices.date,
+              ],
+            ),
+          );
+    });
+
     await syncCurrentPriceFromHistory(point.securityID);
   }
 
@@ -125,23 +150,28 @@ class SecurityService {
   ) async {
     if (points.isEmpty) return 0;
 
-    await db.batch((batch) {
-      for (final point in points) {
-        final dayRange = _dayRange(point.date);
+    // A security holds a single observation per calendar day, so collapse any
+    // duplicate days within the batch (last one wins) before inserting.
+    final byDay = <DateTime, ({DateTime date, double price})>{};
+    for (final point in points) {
+      byDay[_dayOnly(point.date)] = point;
+    }
+    final deduped = byDay.values.toList();
 
+    await db.batch((batch) {
+      for (final point in deduped) {
         batch.deleteWhere(
-          db.securityPriceHistory,
+          db.securityPrices,
           (tbl) =>
               tbl.securityID.equals(securityId) &
-              tbl.date.isBiggerOrEqualValue(dayRange.$1) &
-              tbl.date.isSmallerThanValue(dayRange.$2),
+              tbl.date.equals(_toSqlDay(point.date)),
         );
       }
 
       batch.insertAll(
-        db.securityPriceHistory,
-        points.map(
-          (p) => SecurityPriceHistoryInDB(
+        db.securityPrices,
+        deduped.map(
+          (p) => SecurityPriceInDB(
             id: generateUUID(),
             securityID: securityId,
             date: p.date,
@@ -153,7 +183,7 @@ class SecurityService {
 
     await syncCurrentPriceFromHistory(securityId);
 
-    return points.length;
+    return deduped.length;
   }
 
   /// Among the given calendar [dates], returns the ones that already have a
@@ -167,10 +197,12 @@ class SecurityService {
     if (days.isEmpty) return {};
 
     final existingDates =
-        await (db.selectOnly(db.securityPriceHistory)
-              ..addColumns([db.securityPriceHistory.date])
-              ..where(db.securityPriceHistory.securityID.equals(securityId)))
-            .map((row) => row.read(db.securityPriceHistory.date)!)
+        await (db.selectOnly(db.securityPrices)
+              ..addColumns([db.securityPrices.date])
+              ..where(db.securityPrices.securityID.equals(securityId)))
+            .map(
+              (row) => row.readWithConverter(db.securityPrices.date)!,
+            )
             .get();
 
     return existingDates.map(_dayOnly).where(days.contains).toSet();
@@ -178,16 +210,15 @@ class SecurityService {
 
   DateTime _dayOnly(DateTime date) => DateTime(date.year, date.month, date.day);
 
-  (DateTime, DateTime) _dayRange(DateTime date) {
-    final start = _dayOnly(date);
-    return (start, start.add(const Duration(days: 1)));
-  }
+  /// Serializes [date] to the date-only ('YYYY-MM-DD') string used to store
+  /// price observations, so it can be compared against the `date` column.
+  String _toSqlDay(DateTime date) => const DateTypeConverter().toSql(date);
 
   /// Removes a price-history observation and realigns the security's current
   /// price with the remaining most recent point.
   Future<void> deletePricePoint(String pointId, String securityId) async {
     await (db.delete(
-      db.securityPriceHistory,
+      db.securityPrices,
     )..where((tbl) => tbl.id.equals(pointId))).go();
     await syncCurrentPriceFromHistory(securityId);
   }
@@ -196,7 +227,7 @@ class SecurityService {
   /// price-history observation. No-op when there is no history.
   Future<void> syncCurrentPriceFromHistory(String securityId) async {
     final latest =
-        await (db.select(db.securityPriceHistory)
+        await (db.select(db.securityPrices)
               ..where((tbl) => tbl.securityID.equals(securityId))
               ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)])
               ..limit(1))
@@ -225,7 +256,6 @@ class SecurityService {
     DateTime? date,
   }) async {
     final effectiveDate = date ?? DateTime.now();
-    final dayRange = _dayRange(effectiveDate);
 
     return db.transaction(() async {
       final res =
@@ -238,11 +268,10 @@ class SecurityService {
             ),
           );
 
-      await (db.delete(db.securityPriceHistory)..where(
+      await (db.delete(db.securityPrices)..where(
             (tbl) =>
                 tbl.securityID.equals(securityId) &
-                tbl.date.isBiggerOrEqualValue(dayRange.$1) &
-                tbl.date.isSmallerThanValue(dayRange.$2),
+                tbl.date.equals(_toSqlDay(effectiveDate)),
           ))
           .go();
 

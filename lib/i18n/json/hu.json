@@ -10,11 +10,16 @@
     "edit": "Szerkesztés",
     "delete": "Törlés",
     "see-more": "Továbbiak megtekintése",
+    "see-more-count": "Továbbiak megtekintése ({{n}})",
+    "see-all": "Az összes megtekintése",
+    "see-all-count": "Az összes megtekintése ({{n}})",
     "select-all": "Összes kijelölése",
     "deselect-all": "Összes kijelölésének megszüntetése",
     "select": "Kiválasztás",
     "search": "Keresés",
     "filter": "Szűrés",
+    "sort": "Rendezés",
+    "display_options": "Megjelenítési beállítások",
     "reset": "Alaphelyzetbe állítás",
     "submit": "Beküldés",
     "next": "Következő",
@@ -34,12 +39,7 @@
     "apply": "Alkalmaz",
     "discard": "Elvetés",
     "refresh": "Frissítés",
-    "share": "Megosztás",
-    "see-more-count": "Továbbiak megtekintése ({{n}})",
-    "see-all": "Az összes megtekintése",
-    "see-all-count": "Az összes megtekintése ({{n}})",
-    "sort": "Rendezés",
-    "display_options": "Megjelenítési beállítások"
+    "share": "Megosztás"
   },
   "GENERAL": {
     "or": "vagy",
@@ -206,13 +206,6 @@
     "welcome-back-evening": "Mizu, főnök?",
     "welcome-back-night": "Éjszakázol?",
     "total-balance": "Teljes egyenleg",
-    "my-accounts": "Saját számláim",
-    "active-accounts": "Aktív számlák",
-    "no-accounts": "Még nincsenek számlák létrehozva",
-    "no-accounts.descr": "Kezdje el élvezni a Monekin összes varázsát. A tranzakciók hozzáadásához legalább egy számlát hozzon létre.",
-    "last-transactions": "Legutóbbi tranzakciók",
-    "should-create-account.header": "Hoppá!",
-    "should-create-account.message": "A tranzakciók létrehozásához legalább egy nem archivált számlával kell rendelkeznie",
     "no-income-this-period": "Ebben az időszakban nincs bevétel",
     "no-expenses-this-period": "Ebben az időszakban nincs kiadás",
     "vs-previous-period": "vs előző",
@@ -224,7 +217,14 @@
       "year": "1Y",
       "max": "MAX",
       "custom": "Szokás"
-    }
+    },
+    "my-accounts": "Saját számláim",
+    "active-accounts": "Aktív számlák",
+    "no-accounts": "Még nincsenek számlák létrehozva",
+    "no-accounts.descr": "Kezdje el élvezni a Monekin összes varázsát. A tranzakciók hozzáadásához legalább egy számlát hozzon létre.",
+    "last-transactions": "Legutóbbi tranzakciók",
+    "should-create-account.header": "Hoppá!",
+    "should-create-account.message": "A tranzakciók létrehozásához legalább egy nem archivált számlával kell rendelkeznie"
   },
   "FINANCIAL-HEALTH": {
     "display": "Pénzügyi állapot",
@@ -292,6 +292,12 @@
     "net-worth-subtitle": "The difference between what you own and what you owe.",
     "net-worth-composition": "Net worth composition",
     "net-worth-composition-subtitle": "Distribution between accounts, investments and debts.",
+    "portfolio": "Portfólió",
+    "portfolio-composition": "Portfólió összetétele",
+    "portfolio-composition-subtitle": "Hogyan oszlanak meg befektetései az összes fiók között.",
+    "portfolio-heat-map": "Hőtérkép",
+    "portfolio-heat-map-subtitle": "Minél nagyobb a blokk, annál nagyobb a pozíció. Minél zöldebb, annál jobban teljesít.",
+    "daily-performance": "Napi",
     "compared-to-previous-period": "Az előző időszakhoz képest",
     "cash-flow": "Pénzforgalom",
     "cash-flow-subtitle": "Kevesebbet költök, mint amennyit megkeresek?",
@@ -300,10 +306,7 @@
     "by-tags": "Címkék szerint",
     "distribution": "Megoszlás",
     "finance-health-resume": "Folytatás",
-    "finance-health-breakdown": "Csőd",
-    "portfolio": "Portfólió",
-    "portfolio-composition": "Portfólió összetétele",
-    "portfolio-composition-subtitle": "Hogyan oszlanak meg befektetései az összes fiók között."
+    "finance-health-breakdown": "Csőd"
   },
   "ICON-SELECTOR": {
     "name": "Név:",
@@ -351,6 +354,8 @@
     "delete.multiple.success": "{{x}} tranzakció megfelelően törölve",
     "details": "A mozgás részletei",
     "select": "Válasszon ki egy tranzakciót",
+    "operation": "Művelet",
+    "linked-security": "Kapcsolt biztonság",
     "NEXT-PAYMENTS": {
       "accept": "Elfogadás",
       "skip": "Kihagyás",
@@ -474,9 +479,7 @@
         "one": "Beruházás",
         "other": "Beruházások"
       }
-    },
-    "operation": "Művelet",
-    "linked-security": "Kapcsolt biztonság"
+    }
   },
   "TRANSFER": {
     "display": "Áthelyezés",
@@ -525,17 +528,47 @@
     "withdraw_money": "Pénzfelvétel",
     "correct_balance": "Egyenleg javítás",
     "no-accounts": "Nem található itt megjeleníthető tranzakció. Adjon hozzá egy tranzakciót az alul található „+” gombra kattintva.",
+    "current_balance": "Jelenlegi egyenleg",
+    "total_value": "Teljes érték",
+    "investments": "Beruházások",
+    "cash": "Készpénz",
+    "total_cost": "Teljes költség",
+    "total_cost_help": "Amit fizetett a jelenleg birtokolt értékpapírokért (a súlyozott átlagos beszerzési költségük), nem a jelenlegi piaci értékük.",
+    "unrealized_pnl_help": "A még birtokában lévő értékpapírok papíralapú nyeresége vagy vesztesége: jelenlegi piaci értékük mínusz összköltségük. Ez csak akkor valósul meg, ha eladod.",
+    "range_income": "Jövedelem",
+    "range_expense": "Költségek",
+    "no_income_range": "Ebben az időszakban nincs bevétel",
+    "no_expense_range": "Ebben az időszakban nincs kiadás",
+    "movements_count": "{{n}} mozgások",
+    "GROUP": {
+      "accounts_count": {
+        "one": "{{n}} számla",
+        "other": "{{n}} számla"
+      }
+    },
+    "TABS": {
+      "movements": "Mozdulatok",
+      "info": "Info"
+    },
     "TYPES": {
       "title": "Számlatípus",
       "warning": "A számlatípus kiválasztása után az a jövőben nem változtatható meg.",
-      "normal": "Normál számla",
-      "normal.descr": "Hasznos a napi pénzügyek rögzítéséhez. Ez a leggyakoribb számla, amely lehetővé teszi kiadások, bevételek hozzáadását...",
+      "money": "Pénzszámla",
+      "money.descr": "Készpénzt tart a napi pénzügyeihez. Adjon hozzá kiadásokat, bevételeket és transzfereket.",
       "saving": "Megtakarítási számla",
       "saving.descr": "Csak más számlákról tud pénzt hozzáadni és kivenni belőle. Tökéletes a megtakarítás megkezdéséhez.",
       "investment": "Befektetési számla",
       "investment.descr": "Bróker-, kriptotőzsde- vagy portfóliószámla, amely eszközöket tartalmazhat. Kövesse nyomon befektetett tőkéjét, és frissítse minden eszköz értékét manuálisan értékelésekkel",
-      "money": "Pénzszámla",
-      "money.descr": "Készpénzt tart a napi pénzügyeihez. Adjon hozzá kiadásokat, bevételeket és transzfereket."
+      "normal": "Normál számla",
+      "normal.descr": "Hasznos a napi pénzügyek rögzítéséhez. Ez a leggyakoribb számla, amely lehetővé teszi kiadások, bevételek hozzáadását..."
+    },
+    "TRACKING_MODES": {
+      "title": "Követési mód",
+      "transactions": "Tranzakciók",
+      "transactions_descr": "A pozíciókat a rendszer automatikusan számítja ki az Ön vételi és eladási kereskedéseiből.",
+      "holdings": "Holdingok",
+      "holdings_descr": "Adja meg pozícióit manuálisan keltezett pillanatképként (mennyiség és átlagos költség).",
+      "switch_warn": "Minden mód más forrásból számítja ki a pozícióidat. Mentéskor a jelenlegi pozícióid átkerülnek az új módba. A korábbi dátumokat az adott mód már meglévő előzményei alapján értékeljük."
     },
     "FORM": {
       "name": "Számla neve",
@@ -577,42 +610,29 @@
       "one": "Egy számla kiválasztása",
       "all": "Összes számla",
       "multiple": "Számlák kiválasztása"
-    },
-    "current_balance": "Jelenlegi egyenleg",
-    "total_value": "Teljes érték",
-    "investments": "Beruházások",
-    "cash": "Készpénz",
-    "total_cost": "Teljes költség",
-    "total_cost_help": "Amit fizetett a jelenleg birtokolt értékpapírokért (a súlyozott átlagos beszerzési költségük), nem a jelenlegi piaci értékük.",
-    "unrealized_pnl_help": "A még birtokában lévő értékpapírok papíralapú nyeresége vagy vesztesége: jelenlegi piaci értékük mínusz összköltségük. Ez csak akkor valósul meg, ha eladod.",
-    "range_income": "Jövedelem",
-    "range_expense": "Költségek",
-    "no_income_range": "Ebben az időszakban nincs bevétel",
-    "no_expense_range": "Ebben az időszakban nincs kiadás",
-    "movements_count": "{{n}} mozgások",
-    "GROUP": {
-      "accounts_count": {
-        "one": "{{n}} számla",
-        "other": "{{n}} számla"
-      }
-    },
-    "TABS": {
-      "movements": "Mozdulatok",
-      "info": "Info"
-    },
-    "TRACKING_MODES": {
-      "title": "Követési mód",
-      "transactions": "Tranzakciók",
-      "transactions_descr": "A pozíciókat a rendszer automatikusan számítja ki az Ön vételi és eladási kereskedéseiből.",
-      "holdings": "Holdingok",
-      "holdings_descr": "Adja meg pozícióit manuálisan keltezett pillanatképként (mennyiség és átlagos költség).",
-      "switch_warn": "Minden mód más forrásból számítja ki a pozícióidat. Mentéskor a jelenlegi pozícióid átkerülnek az új módba. A korábbi dátumokat az adott mód már meglévő előzményei alapján értékeljük."
     }
   },
   "CURRENCIES": {
     "currency-converter": "Valutaváltó",
     "currency": "Pénznem",
     "currency-settings": "Pénznem beállítások",
+    "DETAILS": {
+      "equals-to": "1 {{code}} egyenlő",
+      "min": "Minimális",
+      "max": "Maximális",
+      "updated": "Frissítve",
+      "decimals": "{{n}} tizedesjegy",
+      "used-in": "ben használt",
+      "total-exposure": "Teljes expozíció",
+      "no-usage": "Ezt a pénznemet még nem használják semmilyen fiókban vagy befektetésben",
+      "code-locked-hint": "Nem módosítható: az egész alkalmazásban azonosítja a pénznemet.",
+      "type-locked-hint": "Állítsa be, amikor a pénznem létrejön. Ennek megváltoztatása megváltoztatná a ráták kiszámításának módját.",
+      "TABS": {
+        "rates": "Árak",
+        "used-in": "Használatban",
+        "settings": "Beállítások elemre"
+      }
+    },
     "currency-manager": "Valutakezelő",
     "currency-manager.descr": "Konfigurálja a pénznemet és annak árfolyamait másokkal együtt",
     "preferred-currency": "Kedvelt/alap pénznem",
@@ -658,24 +678,7 @@
     "max-exchange-rate": "Maximális árfolyam",
     "empty": "Adja hozzá az árfolyamokat, hogy ha az alapvalutától eltérő valutában vezetett számlái vannak, és így a grafikonok pontosabbak legyenek.",
     "select-a-currency": "Válasszon ki egy pénznemet",
-    "search": "Keresés név vagy pénznemkód alapján",
-    "DETAILS": {
-      "equals-to": "1 {{code}} egyenlő",
-      "min": "Minimális",
-      "max": "Maximális",
-      "updated": "Frissítve",
-      "decimals": "{{n}} tizedesjegy",
-      "used-in": "ben használt",
-      "total-exposure": "Teljes expozíció",
-      "no-usage": "Ezt a pénznemet még nem használják semmilyen fiókban vagy befektetésben",
-      "code-locked-hint": "Nem módosítható: az egész alkalmazásban azonosítja a pénznemet.",
-      "type-locked-hint": "Állítsa be, amikor a pénznem létrejön. Ennek megváltoztatása megváltoztatná a ráták kiszámításának módját.",
-      "TABS": {
-        "rates": "Árak",
-        "used-in": "Használatban",
-        "settings": "Beállítások elemre"
-      }
-    }
+    "search": "Keresés név vagy pénznemkód alapján"
   },
   "TAGS": {
     "display": {
@@ -934,6 +937,10 @@
     "title": "Eszközök",
     "empty_description": "Még nem hozott létre tartalmat. Az olyan vagyontárgyak, mint az ingatlanok, járművek vagy gyűjtemények nyomon követhetők értékelésükkel",
     "create": "Eszköz hozzáadása",
+    "ADD": {
+      "title": "Új elem hozzáadása",
+      "subtitle": "Válassza ki a hozzáadni kívánt elem típusát"
+    },
     "create_success": "Az elem sikeresen létrehozva",
     "edit_success": "A tartalom sikeresen szerkesztve",
     "delete": "Eszköz törlése",
@@ -942,6 +949,8 @@
     "profit": "Nyereség",
     "profit_percent": "hozam %",
     "total_value": "Az eszközök összértéke",
+    "group_by_type": "Csoportosítás eszköztípus szerint",
+    "show_value_variation": "Százalékos változás megjelenítése",
     "amount_invested": "A számla {{ X }} összegét befektette",
     "TYPES": {
       "stocks": "Részvények",
@@ -949,88 +958,10 @@
       "crypto": "Kriptovaluta",
       "real_estate": "Ingatlan",
       "vehicle": "Járművek",
+      "precious_metal": "Nemesfémek",
       "jewelry_art": "Ékszer és művészet",
-      "other": "Más",
-      "precious_metal": "Nemesfémek"
+      "other": "Más"
     },
-    "DETAILS": {
-      "select_account": "Válasszon egy fiókot",
-      "update_value": "Frissítse az értéket",
-      "trade_form_asset_column": "Eszköz",
-      "notes_optional": "Megjegyzések (nem kötelező)",
-      "performance_title": "Performance",
-      "performance_return": "Period return",
-      "performance_return_help": "Piac vagy veszteség a piactól, nem a befizetésektől vagy kivételektől. Ha az érték csak azért nőtt, mert többet fizettél be, ez közel nulla marad.",
-      "performance_invested_value": "Invested value",
-      "performance_invested_value_caption": "Összes pénz ebben az eszközben: kezdőérték plusz kapcsolt vétel és eladás.",
-      "performance_value_diff": "Valuation change",
-      "performance_value_diff_caption": "Mennyit változott az eszköz értéke a kiválasztott időszak elejétől máig.",
-      "about": "Körülbelül",
-      "gross_value": "Bruttó érték",
-      "liability": "Felelősség",
-      "net_worth": "Nettó érték",
-      "acquisition_transaction_badge": "Beszerzés"
-    },
-    "FORM": {
-      "asset_type": "Eszköz típusa",
-      "linked_account": "Kapcsolt fiók (opcionális)",
-      "name": "Eszköz neve",
-      "name_required": "Kérjük, adjon meg egy elemnevet",
-      "description": "Leírás",
-      "initial_value": "Kezdeti érték",
-      "initial_value_required": "Adjon meg egy kezdeti értéket",
-      "initial_value_invalid": "Kérjük, adjon meg egy érvényes számot",
-      "currency": "Valuta",
-      "select_currency": "Kérjük, válasszon egy pénznemet",
-      "creation_date": "Létrehozás dátuma",
-      "edit": "Eszköz szerkesztése",
-      "create": "Eszköz létrehozása",
-      "already_exists": "Már létezik ilyen nevű tartalom. Érdemes lehet szerkeszteni",
-      "valuation_before_creation_date": "Ezen az eszközön vannak olyan értékelések, amelyek dátuma az akvizíció időpontja előtti",
-      "acquisition_date": "Létrehozás dátuma",
-      "linked_liability": "Kapcsolódó felelősség",
-      "link_existing_liability": "Kapcsolja össze a meglévő felelősséget",
-      "no_liabilities": "Önnek még nincsenek kötelezettségei.",
-      "link_acquisition_transaction": "Kapcsolja össze a vásárlási tranzakciót",
-      "link_acquisition_transaction_descr": "Válassza ki azt a költséget, amely ennek az eszköznek a megvásárlását jelenti. Ennek összege (az eszköz pénznemére átszámítva) és dátuma lesz a kezdeti érték és a beszerzés dátuma",
-      "acquisition_transaction": "Felvásárlási tranzakció",
-      "creation_date_before_acquisition_transaction": "Az akvizíció dátuma nem lehet korábbi a kapcsolt tranzakció dátuma előtt"
-    },
-    "VALUATION": {
-      "history": "Értékelés története",
-      "no_valuations": "Még nem rögzítettek értékelést. Kezdje az első értékelés hozzáadásával",
-      "add_valuation": "Értékelés hozzáadása",
-      "edit_valuation": "Értékelés szerkesztése",
-      "value": "Érték",
-      "net_contribution": "Nettó hozzájárulás",
-      "value_required": "Adjon meg egy értéket",
-      "value_invalid": "Kérjük, adjon meg egy érvényes számot",
-      "update_value_success": "Az értékelés sikeresen hozzáadva",
-      "edit_valuation_success": "Az értékelés sikeresen frissítve",
-      "delete_valuation_success": "Az értékelés sikeresen törölve",
-      "delete_all_valuations": "Törölje az összes értékelést",
-      "delete_all_valuations_success": "Az összes értékelés sikeresen törölve",
-      "net_contribution_help": "Az ebbe az eszközbe befektetett készpénz: a kezdőérték plusz az összes kapcsolódó vételi/eladási tranzakció. Ez elkülönül a piaci érték változásaitól, amelyeket manuálisan rögzít az értékeléseken keresztül."
-    },
-    "SORT": {
-      "name_asc": "Név (A-Z)",
-      "name_desc": "Név (Z-A)",
-      "value_asc": "Érték (a legalacsonyabb először)",
-      "value_desc": "Érték (a legmagasabb először)"
-    },
-    "ACTIONS": {
-      "add_register": {
-        "button_label": "Link transaction"
-      },
-      "link_transaction": {
-        "success": "Transaction linked successfully"
-      }
-    },
-    "ADD": {
-      "title": "Új elem hozzáadása",
-      "subtitle": "Válassza ki a hozzáadni kívánt elem típusát"
-    },
-    "group_by_type": "Csoportosítás eszköztípus szerint",
     "TYPE_DESCRIPTIONS": {
       "real_estate": "Ingatlan és föld",
       "vehicle": "Autók, csónakok és egyebek",
@@ -1081,8 +1012,11 @@
         "update": "Frissítés",
         "update_positions": "Frissítse a pozíciókat",
         "full_portfolio": "teljes portfólió",
+        "editor_intro": "Mondd el, hogyan néz ki a portfóliód ekkor: {{date}}. A megadott értékeket a rendszer az egyenlegek és statisztikák kiszámításához használja ettől a dátumtól a következő pillanatfelvételig.",
         "date_label": "Pillanatfelvétel dátuma",
+        "overwrite_warning": "Ehhez a dátumhoz már tartozik pillanatfelvétel. Mentéskor felülíródik.",
         "add_position": "Adjon hozzá egy másik pozíciót",
+        "col_symbol": "Szimbólum",
         "total_cost": "Teljes portfólió költség",
         "save": "Pillanatkép mentése",
         "remove_hint": "Egy pozíció eltávolításához egyszerűen törölje a sorát: a pillanatfelvétel a teljes fénykép, nem pedig egy mozgás.",
@@ -1120,7 +1054,8 @@
       "PRICE_HISTORY": {
         "add": "Add hozzá az árat",
         "edit": "Ár szerkesztése",
-        "price": "Ár"
+        "price": "Ár",
+        "overwrite_warning": "Ehhez a dátumhoz már tartozik ár. Mentéskor felülíródik."
       },
       "IMPORT": {
         "title": "Import árak",
@@ -1153,7 +1088,79 @@
       "delete_success": "A biztonság sikeresen törölve",
       "in_use_error": "Ennek az értékpapírnak még mindig vannak hozzá kapcsolódó részesedései vagy kereskedései. Törlés előtt távolítsa el őket."
     },
-    "show_value_variation": "Százalékos változás megjelenítése"
+    "ACTIONS": {
+      "add_register": {
+        "button_label": "Link transaction"
+      },
+      "link_transaction": {
+        "success": "Transaction linked successfully"
+      }
+    },
+    "DETAILS": {
+      "about": "Körülbelül",
+      "gross_value": "Bruttó érték",
+      "liability": "Felelősség",
+      "net_worth": "Nettó érték",
+      "acquisition_transaction_badge": "Beszerzés",
+      "select_account": "Válasszon egy fiókot",
+      "update_value": "Frissítse az értéket",
+      "trade_form_asset_column": "Eszköz",
+      "notes_optional": "Megjegyzések (nem kötelező)",
+      "performance_title": "Performance",
+      "performance_return": "Period return",
+      "performance_return_help": "Piac vagy veszteség a piactól, nem a befizetésektől vagy kivételektől. Ha az érték csak azért nőtt, mert többet fizettél be, ez közel nulla marad.",
+      "performance_invested_value": "Invested value",
+      "performance_invested_value_caption": "Összes pénz ebben az eszközben: kezdőérték plusz kapcsolt vétel és eladás.",
+      "performance_value_diff": "Valuation change",
+      "performance_value_diff_caption": "Mennyit változott az eszköz értéke a kiválasztott időszak elejétől máig."
+    },
+    "FORM": {
+      "asset_type": "Eszköz típusa",
+      "linked_account": "Kapcsolt fiók (opcionális)",
+      "linked_liability": "Kapcsolódó felelősség",
+      "link_existing_liability": "Kapcsolja össze a meglévő felelősséget",
+      "no_liabilities": "Önnek még nincsenek kötelezettségei.",
+      "name": "Eszköz neve",
+      "name_required": "Kérjük, adjon meg egy elemnevet",
+      "description": "Leírás",
+      "initial_value": "Kezdeti érték",
+      "initial_value_required": "Adjon meg egy kezdeti értéket",
+      "initial_value_invalid": "Kérjük, adjon meg egy érvényes számot",
+      "link_acquisition_transaction": "Kapcsolja össze a vásárlási tranzakciót",
+      "link_acquisition_transaction_descr": "Válassza ki azt a költséget, amely ennek az eszköznek a megvásárlását jelenti. Ennek összege (az eszköz pénznemére átszámítva) és dátuma lesz a kezdeti érték és a beszerzés dátuma",
+      "acquisition_transaction": "Felvásárlási tranzakció",
+      "creation_date_before_acquisition_transaction": "Az akvizíció dátuma nem lehet korábbi a kapcsolt tranzakció dátuma előtt",
+      "currency": "Valuta",
+      "select_currency": "Kérjük, válasszon egy pénznemet",
+      "creation_date": "Létrehozás dátuma",
+      "acquisition_date": "Létrehozás dátuma",
+      "edit": "Eszköz szerkesztése",
+      "create": "Eszköz létrehozása",
+      "already_exists": "Már létezik ilyen nevű tartalom. Érdemes lehet szerkeszteni",
+      "valuation_before_creation_date": "Ezen az eszközön vannak olyan értékelések, amelyek dátuma az akvizíció időpontja előtti"
+    },
+    "VALUATION": {
+      "history": "Értékelés története",
+      "no_valuations": "Még nem rögzítettek értékelést. Kezdje az első értékelés hozzáadásával",
+      "add_valuation": "Értékelés hozzáadása",
+      "edit_valuation": "Értékelés szerkesztése",
+      "value": "Érték",
+      "net_contribution": "Nettó hozzájárulás",
+      "net_contribution_help": "Az ebbe az eszközbe befektetett készpénz: a kezdőérték plusz az összes kapcsolódó vételi/eladási tranzakció. Ez elkülönül a piaci érték változásaitól, amelyeket manuálisan rögzít az értékeléseken keresztül.",
+      "value_required": "Adjon meg egy értéket",
+      "value_invalid": "Kérjük, adjon meg egy érvényes számot",
+      "update_value_success": "Az értékelés sikeresen hozzáadva",
+      "edit_valuation_success": "Az értékelés sikeresen frissítve",
+      "delete_valuation_success": "Az értékelés sikeresen törölve",
+      "delete_all_valuations": "Törölje az összes értékelést",
+      "delete_all_valuations_success": "Az összes értékelés sikeresen törölve"
+    },
+    "SORT": {
+      "name_asc": "Név (A-Z)",
+      "name_desc": "Név (Z-A)",
+      "value_asc": "Érték (a legalacsonyabb először)",
+      "value_desc": "Érték (a legmagasabb először)"
+    }
   },
   "TARGET_TIMELINE_STATUSES": {
     "active": "Aktív",

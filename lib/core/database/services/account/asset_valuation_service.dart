@@ -20,7 +20,7 @@ class AssetValuationService {
 
   /// Inserts a valuation, or replaces an existing one if there is already
   /// a valuation for the same asset on the same day.
-  Future<int> insertOrUpdateValuation(ValuationInDB valuation) async {
+  Future<int> insertOrUpdateValuation(AssetValuationInDB valuation) async {
     final existing = await getValuationsForAsset(valuation.assetId).first;
 
     final sameDay = existing.where(
@@ -33,21 +33,21 @@ class AssetValuationService {
     }
 
     return db
-        .into(db.valuations)
+        .into(db.assetValuations)
         .insert(valuation, mode: InsertMode.insertOrReplace);
   }
 
   Future<int> deleteValuation(String valuationId) {
     return (db.delete(
-      db.valuations,
+      db.assetValuations,
     )..where((tbl) => tbl.id.equals(valuationId))).go();
   }
 
-  Stream<List<ValuationInDB>> getValuationsForAsset(String assetId) {
+  Stream<List<AssetValuationInDB>> getValuationsForAsset(String assetId) {
     return db.getValuationsForAsset(assetId: assetId).watch();
   }
 
-  Stream<ValuationInDB?> getLatestValuationForAsset(
+  Stream<AssetValuationInDB?> getLatestValuationForAsset(
     String assetId, {
     DateTime? date,
   }) {
@@ -232,7 +232,7 @@ class AssetValuationService {
     final newVal = base + delta;
 
     await insertOrUpdateValuation(
-      ValuationInDB(
+      AssetValuationInDB(
         id: generateUUID(),
         assetId: assetId,
         date: date,

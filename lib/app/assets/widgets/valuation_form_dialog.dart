@@ -10,11 +10,11 @@ import 'package:monekin/core/utils/text_field_utils.dart';
 import 'package:monekin/core/utils/uuid.dart';
 import 'package:monekin/i18n/generated/translations.g.dart';
 
-Future<ValuationInDB?> showValuationFormDialog(
+Future<AssetValuationInDB?> showValuationFormDialog(
   BuildContext context,
   ValuationFormDialog dialog,
 ) {
-  return showModalBottomSheet<ValuationInDB>(
+  return showModalBottomSheet<AssetValuationInDB>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
@@ -33,7 +33,7 @@ class ValuationFormDialog extends StatefulWidget {
 
   final String assetId;
   final String? currencySymbol;
-  final ValuationInDB? valuationToEdit;
+  final AssetValuationInDB? valuationToEdit;
 
   final DateTime firstDate;
 
@@ -72,7 +72,7 @@ class _ValuationFormDialogState extends State<ValuationFormDialog> {
     final value = double.tryParse(_valueController.text);
     if (value == null) return;
 
-    final result = ValuationInDB(
+    final result = AssetValuationInDB(
       id: widget.valuationToEdit?.id ?? generateUUID(),
       assetId: widget.assetId,
       date: _date,

@@ -8,7 +8,7 @@
 --     the same value are displayed together). Starts empty for everyone.
 --   * New `securities` + `holdings` tables (financial instruments
 --     held inside investment accounts, weighted-average cost).
---   * New `securityPriceHistory` table (manual price observations
+--   * New `securityPrices` table (manual price observations
 --     over time, powering the real price chart).
 --   * New `accountSnapshots` + `holdingSnapshots` tables (manual
 --     portfolio-snapshot history for accounts tracked in 'holdings'
@@ -32,7 +32,7 @@
 -- financial assets (stocks/funds/crypto) are auto-converted into
 -- `securities` here:
 --   - one security per financial asset (latest valuation as price),
---   - its valuations become `securityPriceHistory` points,
+--   - its valuations become `securityPrices` points,
 --   - if it was linked to an account, a `holding` of quantity 1 is
 --     created (avg cost = the security's current price, so the
 --     migrated position shows no phantom gain/loss). For accounts in
@@ -120,12 +120,17 @@ CREATE TABLE securities (
 );
 
 -- Manual price observations for a security over time (real price chart).
-CREATE TABLE securityPriceHistory (
+-- `date` is date-only ('YYYY-MM-DD'): a security holds a single observation
+-- per calendar day, enforced by the unique index below.
+CREATE TABLE securityPrices (
     id TEXT NOT NULL PRIMARY KEY,
     securityID TEXT NOT NULL REFERENCES securities(id) ON DELETE CASCADE ON UPDATE CASCADE,
     date TEXT NOT NULL,
     price REAL NOT NULL
 );
+
+CREATE UNIQUE INDEX idx_securityPrices_securityID_date
+ON securityPrices(securityID, date DESC);
 
 -- ------------------------------------------------------------
 -- Step 3: New `holdings` table (a security position in an account).
@@ -263,16 +268,18 @@ SELECT
 FROM assets a
 WHERE a.assetType IN ('stocks', 'funds', 'crypto');
 
--- 7b. Valuations of those assets become price-history points.
-INSERT INTO securityPriceHistory (id, securityID, date, price)
-SELECT 'sph_' || v.id, 'sec_' || v.assetId, v.date, v.value
+-- 7b. Valuations of those assets become price-history points. Dates are
+--     normalized to date-only (one observation per calendar day).
+INSERT INTO securityPrices (id, securityID, date, price)
+SELECT 'sph_' || v.id, 'sec_' || v.assetId, DATE(v.date), v.value
 FROM valuations v
 INNER JOIN assets a ON a.id = v.assetId
 WHERE a.assetType IN ('stocks', 'funds', 'crypto');
 
--- 7b-bis. Financial assets without valuations get a single seed point.
-INSERT INTO securityPriceHistory (id, securityID, date, price)
-SELECT 'sphinit_' || a.id, 'sec_' || a.id, a.creationDate, a.initialValue
+-- 7b-bis. Financial assets without valuations get a single seed point
+--         (date-only).
+INSERT INTO securityPrices (id, securityID, date, price)
+SELECT 'sphinit_' || a.id, 'sec_' || a.id, DATE(a.creationDate), a.initialValue
 FROM assets a
 WHERE a.assetType IN ('stocks', 'funds', 'crypto')
   AND NOT EXISTS (SELECT 1 FROM valuations v WHERE v.assetId = a.id);
@@ -443,3 +450,16 @@ CREATE TABLE securityTaxonomyAssignments (
 
 CREATE INDEX idx_securityTaxonomyAssignments_securityID ON securityTaxonomyAssignments(securityID);
 CREATE INDEX idx_securityTaxonomyAssignments_taxonomyID ON securityTaxonomyAssignments(taxonomyID);
+
+-- ------------------------------------------------------------
+-- Step 10: Rename `valuations` -> `assetValuations` so the daily
+-- date-series tables share a consistent naming (alongside
+-- `securityPrices`). Only physical-asset valuations remain after
+-- Step 7f, so this is a pure rename with no data change. The
+-- unique (assetId, date) index is recreated under the new name.
+-- ------------------------------------------------------------
+DROP INDEX IF EXISTS idx_valuations_assetId_date;
+
+ALTER TABLE valuations RENAME TO assetValuations;
+
+CREATE UNIQUE INDEX idx_assetValuations_assetId_date ON assetValuations(assetId, date DESC);

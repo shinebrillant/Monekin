@@ -199,7 +199,7 @@ class HoldingService {
   ///   - `holdings`: the position taken from the most recent snapshot on or
   ///     before [date] (0 if the security is absent from that snapshot, i.e. it
   ///     was removed).
-  /// - Price at [date]: latest `securityPriceHistory` observation on or before
+  /// - Price at [date]: latest `securityPrices` observation on or before
   ///   [date], falling back to the security's current price.
   Stream<
     List<
@@ -303,7 +303,7 @@ class HoldingService {
            ELSE COALESCE(tp.qty, 0)
          END) AS quantity,
         COALESCE(
-          (SELECT sph.price FROM securityPriceHistory sph
+          (SELECT sph.price FROM securityPrices sph
             WHERE sph.securityID = u.securityID AND sph.date <= ?1
             ORDER BY sph.date DESC LIMIT 1),
           s.currentPrice, 0) AS price,
@@ -342,7 +342,7 @@ class HoldingService {
             db.transactions,
             db.accountSnapshots,
             db.holdingSnapshots,
-            db.securityPriceHistory,
+            db.securityPrices,
           },
         )
         .watch()

@@ -114,7 +114,7 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
   List<_PricePoint> _buildPricePoints(
     SecurityInDB security,
     List<TransactionInDB> trades,
-    List<SecurityPriceHistoryInDB> history,
+    List<SecurityPriceInDB> history,
   ) {
     final points = <_PricePoint>[
       for (final h in history) _PricePoint(h.date, h.price),
@@ -232,7 +232,7 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
   }
 
   Future<void> _editPricePoint(
-    SecurityPriceHistoryInDB point,
+    SecurityPriceInDB point,
     SecurityInDB security,
     Currency? currency,
   ) async {
@@ -250,7 +250,7 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
     }
   }
 
-  Future<void> _deletePricePoint(SecurityPriceHistoryInDB point) async {
+  Future<void> _deletePricePoint(SecurityPriceInDB point) async {
     await SecurityService.instance.deletePricePoint(point.id, point.securityID);
   }
 
@@ -275,7 +275,7 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
             (
               List<_Position> positions,
               List<TransactionInDB> trades,
-              List<SecurityPriceHistoryInDB> history,
+              List<SecurityPriceInDB> history,
               Currency? currency,
             ) => (
               security: security,
@@ -294,7 +294,7 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
         final positions = snapshot.data?.positions ?? const <_Position>[];
         final trades = snapshot.data?.trades ?? const <TransactionInDB>[];
         final history =
-            snapshot.data?.history ?? const <SecurityPriceHistoryInDB>[];
+            snapshot.data?.history ?? const <SecurityPriceInDB>[];
         final currency = snapshot.data?.currency;
 
         final allPoints = _buildPricePoints(security, trades, history);
@@ -626,7 +626,7 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
     Currency? currency,
     List<_Position> positions,
     List<TransactionInDB> trades,
-    List<SecurityPriceHistoryInDB> history,
+    List<SecurityPriceInDB> history,
   ) {
     final t = Translations.of(context);
 
@@ -894,14 +894,14 @@ class _SecurityDetailsPageState extends State<SecurityDetailsPage> {
   Widget _buildHistory(
     SecurityInDB security,
     Currency? currency,
-    List<SecurityPriceHistoryInDB> history,
+    List<SecurityPriceInDB> history,
   ) {
     final t = Translations.of(context);
 
-    final sorted = List<SecurityPriceHistoryInDB>.from(history)
+    final sorted = List<SecurityPriceInDB>.from(history)
       ..sort((a, b) => b.date.compareTo(a.date));
 
-    return EditableTimeSeriesCard<SecurityPriceHistoryInDB>(
+    return EditableTimeSeriesCard<SecurityPriceInDB>(
       title: t.assets.securities.tabs.price_history,
       headerAction: CardHeaderAction(
         text: t.ui_actions.add,

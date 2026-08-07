@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:monekin/app/securities/security_details_page.dart';
 import 'package:monekin/app/securities/widgets/security_avatar.dart';
 import 'package:monekin/app/securities/widgets/security_form_sheet.dart';
+import 'package:monekin/app/securities/widgets/security_price_form_dialog.dart';
 import 'package:monekin/core/database/app_db.dart';
 import 'package:monekin/core/database/services/account/holding_service.dart';
 import 'package:monekin/core/database/services/account/security_service.dart';
@@ -486,47 +487,25 @@ class _TradeSheetState extends State<_TradeSheet> {
 Future<void> showUpdatePriceSheet(
   BuildContext context, {
   required SecurityInDB security,
-}) {
-  final controller = TextEditingController(
-    text: (security.currentPrice ?? 0).toString(),
+}) async {
+  final currency = await CurrencyService.instance
+      .getCurrencyByCode(security.currencyId)
+      .first;
+
+  if (!context.mounted) return;
+
+  final point = await showSecurityPriceFormDialog(
+    context,
+    SecurityPriceFormDialog(
+      securityId: security.id,
+      currencySymbol: currency?.symbol,
+      initialPrice: security.currentPrice,
+      dateEditable: false,
+      title: Translations.of(context).assets.holdings.update_price,
+    ),
   );
 
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    builder: (context) {
-      final t = Translations.of(context);
-
-      return ModalContainer(
-        title: t.assets.holdings.update_price,
-        bodyPadding: const EdgeInsets.symmetric(horizontal: 16),
-        footer: BottomSheetFooter(
-          onSaved: () async {
-            final price = double.tryParse(controller.text);
-            if (price == null) return;
-            await SecurityService.instance.updatePrice(security.id, price);
-            RouteUtils.popRoute();
-          },
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(security.name),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: t.assets.holdings.current_price,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      );
-    },
-  );
+  if (point != null) {
+    await SecurityService.instance.upsertPricePoint(point);
+  }
 }

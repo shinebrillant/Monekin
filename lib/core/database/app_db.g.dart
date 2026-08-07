@@ -2441,11 +2441,12 @@ class AssetsCompanion extends UpdateCompanion<AssetInDB> {
   }
 }
 
-class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
+class AssetValuations extends Table
+    with TableInfo<AssetValuations, AssetValuationInDB> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Valuations(this.attachedDatabase, [this._alias]);
+  AssetValuations(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
@@ -2475,7 +2476,7 @@ class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
         type: DriftSqlType.string,
         requiredDuringInsert: true,
         $customConstraints: 'NOT NULL',
-      ).withConverter<DateTime>(Valuations.$converterdate);
+      ).withConverter<DateTime>(AssetValuations.$converterdate);
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
     'value',
@@ -2491,10 +2492,10 @@ class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'valuations';
+  static const String $name = 'assetValuations';
   @override
   VerificationContext validateIntegrity(
-    Insertable<ValuationInDB> instance, {
+    Insertable<AssetValuationInDB> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2526,9 +2527,9 @@ class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  ValuationInDB map(Map<String, dynamic> data, {String? tablePrefix}) {
+  AssetValuationInDB map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ValuationInDB(
+    return AssetValuationInDB(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -2537,7 +2538,7 @@ class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
         DriftSqlType.string,
         data['${effectivePrefix}assetId'],
       )!,
-      date: Valuations.$converterdate.fromSql(
+      date: AssetValuations.$converterdate.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}date'],
@@ -2551,8 +2552,8 @@ class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
   }
 
   @override
-  Valuations createAlias(String alias) {
-    return Valuations(attachedDatabase, alias);
+  AssetValuations createAlias(String alias) {
+    return AssetValuations(attachedDatabase, alias);
   }
 
   static TypeConverter<DateTime, String> $converterdate =
@@ -2561,10 +2562,11 @@ class Valuations extends Table with TableInfo<Valuations, ValuationInDB> {
   bool get dontWriteConstraints => true;
 }
 
-class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
+class AssetValuationInDB extends DataClass
+    implements Insertable<AssetValuationInDB> {
   final String id;
 
-  /// ID of the asset this valuation belongs to (mutually exclusive with accountId)
+  /// ID of the asset this valuation belongs to
   final String assetId;
 
   /// Date of this valuation snapshot
@@ -2572,7 +2574,7 @@ class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
 
   /// Value at the time of this snapshot, in the currency of the account or asset
   final double value;
-  const ValuationInDB({
+  const AssetValuationInDB({
     required this.id,
     required this.assetId,
     required this.date,
@@ -2584,14 +2586,16 @@ class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
     map['id'] = Variable<String>(id);
     map['assetId'] = Variable<String>(assetId);
     {
-      map['date'] = Variable<String>(Valuations.$converterdate.toSql(date));
+      map['date'] = Variable<String>(
+        AssetValuations.$converterdate.toSql(date),
+      );
     }
     map['value'] = Variable<double>(value);
     return map;
   }
 
-  ValuationsCompanion toCompanion(bool nullToAbsent) {
-    return ValuationsCompanion(
+  AssetValuationsCompanion toCompanion(bool nullToAbsent) {
+    return AssetValuationsCompanion(
       id: Value(id),
       assetId: Value(assetId),
       date: Value(date),
@@ -2599,12 +2603,12 @@ class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
     );
   }
 
-  factory ValuationInDB.fromJson(
+  factory AssetValuationInDB.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ValuationInDB(
+    return AssetValuationInDB(
       id: serializer.fromJson<String>(json['id']),
       assetId: serializer.fromJson<String>(json['assetId']),
       date: serializer.fromJson<DateTime>(json['date']),
@@ -2622,19 +2626,19 @@ class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
     };
   }
 
-  ValuationInDB copyWith({
+  AssetValuationInDB copyWith({
     String? id,
     String? assetId,
     DateTime? date,
     double? value,
-  }) => ValuationInDB(
+  }) => AssetValuationInDB(
     id: id ?? this.id,
     assetId: assetId ?? this.assetId,
     date: date ?? this.date,
     value: value ?? this.value,
   );
-  ValuationInDB copyWithCompanion(ValuationsCompanion data) {
-    return ValuationInDB(
+  AssetValuationInDB copyWithCompanion(AssetValuationsCompanion data) {
+    return AssetValuationInDB(
       id: data.id.present ? data.id.value : this.id,
       assetId: data.assetId.present ? data.assetId.value : this.assetId,
       date: data.date.present ? data.date.value : this.date,
@@ -2644,7 +2648,7 @@ class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
 
   @override
   String toString() {
-    return (StringBuffer('ValuationInDB(')
+    return (StringBuffer('AssetValuationInDB(')
           ..write('id: $id, ')
           ..write('assetId: $assetId, ')
           ..write('date: $date, ')
@@ -2658,27 +2662,27 @@ class ValuationInDB extends DataClass implements Insertable<ValuationInDB> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ValuationInDB &&
+      (other is AssetValuationInDB &&
           other.id == this.id &&
           other.assetId == this.assetId &&
           other.date == this.date &&
           other.value == this.value);
 }
 
-class ValuationsCompanion extends UpdateCompanion<ValuationInDB> {
+class AssetValuationsCompanion extends UpdateCompanion<AssetValuationInDB> {
   final Value<String> id;
   final Value<String> assetId;
   final Value<DateTime> date;
   final Value<double> value;
   final Value<int> rowid;
-  const ValuationsCompanion({
+  const AssetValuationsCompanion({
     this.id = const Value.absent(),
     this.assetId = const Value.absent(),
     this.date = const Value.absent(),
     this.value = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  ValuationsCompanion.insert({
+  AssetValuationsCompanion.insert({
     required String id,
     required String assetId,
     required DateTime date,
@@ -2688,7 +2692,7 @@ class ValuationsCompanion extends UpdateCompanion<ValuationInDB> {
        assetId = Value(assetId),
        date = Value(date),
        value = Value(value);
-  static Insertable<ValuationInDB> custom({
+  static Insertable<AssetValuationInDB> custom({
     Expression<String>? id,
     Expression<String>? assetId,
     Expression<String>? date,
@@ -2704,14 +2708,14 @@ class ValuationsCompanion extends UpdateCompanion<ValuationInDB> {
     });
   }
 
-  ValuationsCompanion copyWith({
+  AssetValuationsCompanion copyWith({
     Value<String>? id,
     Value<String>? assetId,
     Value<DateTime>? date,
     Value<double>? value,
     Value<int>? rowid,
   }) {
-    return ValuationsCompanion(
+    return AssetValuationsCompanion(
       id: id ?? this.id,
       assetId: assetId ?? this.assetId,
       date: date ?? this.date,
@@ -2731,7 +2735,7 @@ class ValuationsCompanion extends UpdateCompanion<ValuationInDB> {
     }
     if (date.present) {
       map['date'] = Variable<String>(
-        Valuations.$converterdate.toSql(date.value),
+        AssetValuations.$converterdate.toSql(date.value),
       );
     }
     if (value.present) {
@@ -2745,7 +2749,7 @@ class ValuationsCompanion extends UpdateCompanion<ValuationInDB> {
 
   @override
   String toString() {
-    return (StringBuffer('ValuationsCompanion(')
+    return (StringBuffer('AssetValuationsCompanion(')
           ..write('id: $id, ')
           ..write('assetId: $assetId, ')
           ..write('date: $date, ')
@@ -8293,12 +8297,12 @@ class SavedFiltersCompanion extends UpdateCompanion<SavedFilterInDB> {
   }
 }
 
-class SecurityPriceHistory extends Table
-    with TableInfo<SecurityPriceHistory, SecurityPriceHistoryInDB> {
+class SecurityPrices extends Table
+    with TableInfo<SecurityPrices, SecurityPriceInDB> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  SecurityPriceHistory(this.attachedDatabase, [this._alias]);
+  SecurityPrices(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
@@ -8320,15 +8324,15 @@ class SecurityPriceHistory extends Table
     $customConstraints:
         'NOT NULL REFERENCES securities(id)ON UPDATE CASCADE ON DELETE CASCADE',
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-    'date',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL',
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime, String> date =
+      GeneratedColumn<String>(
+        'date',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+        $customConstraints: 'NOT NULL',
+      ).withConverter<DateTime>(SecurityPrices.$converterdate);
   static const VerificationMeta _priceMeta = const VerificationMeta('price');
   late final GeneratedColumn<double> price = GeneratedColumn<double>(
     'price',
@@ -8344,10 +8348,10 @@ class SecurityPriceHistory extends Table
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'securityPriceHistory';
+  static const String $name = 'securityPrices';
   @override
   VerificationContext validateIntegrity(
-    Insertable<SecurityPriceHistoryInDB> instance, {
+    Insertable<SecurityPriceInDB> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -8365,14 +8369,6 @@ class SecurityPriceHistory extends Table
     } else if (isInserting) {
       context.missing(_securityIDMeta);
     }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
     if (data.containsKey('price')) {
       context.handle(
         _priceMeta,
@@ -8387,12 +8383,9 @@ class SecurityPriceHistory extends Table
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  SecurityPriceHistoryInDB map(
-    Map<String, dynamic> data, {
-    String? tablePrefix,
-  }) {
+  SecurityPriceInDB map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SecurityPriceHistoryInDB(
+    return SecurityPriceInDB(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -8401,10 +8394,12 @@ class SecurityPriceHistory extends Table
         DriftSqlType.string,
         data['${effectivePrefix}securityID'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
+      date: SecurityPrices.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
       price: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}price'],
@@ -8413,25 +8408,27 @@ class SecurityPriceHistory extends Table
   }
 
   @override
-  SecurityPriceHistory createAlias(String alias) {
-    return SecurityPriceHistory(attachedDatabase, alias);
+  SecurityPrices createAlias(String alias) {
+    return SecurityPrices(attachedDatabase, alias);
   }
 
+  static TypeConverter<DateTime, String> $converterdate =
+      const DateTypeConverter();
   @override
   bool get dontWriteConstraints => true;
 }
 
-class SecurityPriceHistoryInDB extends DataClass
-    implements Insertable<SecurityPriceHistoryInDB> {
+class SecurityPriceInDB extends DataClass
+    implements Insertable<SecurityPriceInDB> {
   final String id;
   final String securityID;
 
-  /// Date of this price observation
+  /// Day of this price observation (date-only, one observation per day)
   final DateTime date;
 
   /// Price per unit at that date, in the security currency
   final double price;
-  const SecurityPriceHistoryInDB({
+  const SecurityPriceInDB({
     required this.id,
     required this.securityID,
     required this.date,
@@ -8442,13 +8439,15 @@ class SecurityPriceHistoryInDB extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['securityID'] = Variable<String>(securityID);
-    map['date'] = Variable<DateTime>(date);
+    {
+      map['date'] = Variable<String>(SecurityPrices.$converterdate.toSql(date));
+    }
     map['price'] = Variable<double>(price);
     return map;
   }
 
-  SecurityPriceHistoryCompanion toCompanion(bool nullToAbsent) {
-    return SecurityPriceHistoryCompanion(
+  SecurityPricesCompanion toCompanion(bool nullToAbsent) {
+    return SecurityPricesCompanion(
       id: Value(id),
       securityID: Value(securityID),
       date: Value(date),
@@ -8456,12 +8455,12 @@ class SecurityPriceHistoryInDB extends DataClass
     );
   }
 
-  factory SecurityPriceHistoryInDB.fromJson(
+  factory SecurityPriceInDB.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SecurityPriceHistoryInDB(
+    return SecurityPriceInDB(
       id: serializer.fromJson<String>(json['id']),
       securityID: serializer.fromJson<String>(json['securityID']),
       date: serializer.fromJson<DateTime>(json['date']),
@@ -8479,21 +8478,19 @@ class SecurityPriceHistoryInDB extends DataClass
     };
   }
 
-  SecurityPriceHistoryInDB copyWith({
+  SecurityPriceInDB copyWith({
     String? id,
     String? securityID,
     DateTime? date,
     double? price,
-  }) => SecurityPriceHistoryInDB(
+  }) => SecurityPriceInDB(
     id: id ?? this.id,
     securityID: securityID ?? this.securityID,
     date: date ?? this.date,
     price: price ?? this.price,
   );
-  SecurityPriceHistoryInDB copyWithCompanion(
-    SecurityPriceHistoryCompanion data,
-  ) {
-    return SecurityPriceHistoryInDB(
+  SecurityPriceInDB copyWithCompanion(SecurityPricesCompanion data) {
+    return SecurityPriceInDB(
       id: data.id.present ? data.id.value : this.id,
       securityID: data.securityID.present
           ? data.securityID.value
@@ -8505,7 +8502,7 @@ class SecurityPriceHistoryInDB extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('SecurityPriceHistoryInDB(')
+    return (StringBuffer('SecurityPriceInDB(')
           ..write('id: $id, ')
           ..write('securityID: $securityID, ')
           ..write('date: $date, ')
@@ -8519,28 +8516,27 @@ class SecurityPriceHistoryInDB extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is SecurityPriceHistoryInDB &&
+      (other is SecurityPriceInDB &&
           other.id == this.id &&
           other.securityID == this.securityID &&
           other.date == this.date &&
           other.price == this.price);
 }
 
-class SecurityPriceHistoryCompanion
-    extends UpdateCompanion<SecurityPriceHistoryInDB> {
+class SecurityPricesCompanion extends UpdateCompanion<SecurityPriceInDB> {
   final Value<String> id;
   final Value<String> securityID;
   final Value<DateTime> date;
   final Value<double> price;
   final Value<int> rowid;
-  const SecurityPriceHistoryCompanion({
+  const SecurityPricesCompanion({
     this.id = const Value.absent(),
     this.securityID = const Value.absent(),
     this.date = const Value.absent(),
     this.price = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  SecurityPriceHistoryCompanion.insert({
+  SecurityPricesCompanion.insert({
     required String id,
     required String securityID,
     required DateTime date,
@@ -8550,10 +8546,10 @@ class SecurityPriceHistoryCompanion
        securityID = Value(securityID),
        date = Value(date),
        price = Value(price);
-  static Insertable<SecurityPriceHistoryInDB> custom({
+  static Insertable<SecurityPriceInDB> custom({
     Expression<String>? id,
     Expression<String>? securityID,
-    Expression<DateTime>? date,
+    Expression<String>? date,
     Expression<double>? price,
     Expression<int>? rowid,
   }) {
@@ -8566,14 +8562,14 @@ class SecurityPriceHistoryCompanion
     });
   }
 
-  SecurityPriceHistoryCompanion copyWith({
+  SecurityPricesCompanion copyWith({
     Value<String>? id,
     Value<String>? securityID,
     Value<DateTime>? date,
     Value<double>? price,
     Value<int>? rowid,
   }) {
-    return SecurityPriceHistoryCompanion(
+    return SecurityPricesCompanion(
       id: id ?? this.id,
       securityID: securityID ?? this.securityID,
       date: date ?? this.date,
@@ -8592,7 +8588,9 @@ class SecurityPriceHistoryCompanion
       map['securityID'] = Variable<String>(securityID.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<String>(
+        SecurityPrices.$converterdate.toSql(date.value),
+      );
     }
     if (price.present) {
       map['price'] = Variable<double>(price.value);
@@ -8605,7 +8603,7 @@ class SecurityPriceHistoryCompanion
 
   @override
   String toString() {
-    return (StringBuffer('SecurityPriceHistoryCompanion(')
+    return (StringBuffer('SecurityPricesCompanion(')
           ..write('id: $id, ')
           ..write('securityID: $securityID, ')
           ..write('date: $date, ')
@@ -11491,7 +11489,7 @@ abstract class _$AppDB extends GeneratedDatabase {
   late final Accounts accounts = Accounts(this);
   late final Debts debts = Debts(this);
   late final Assets assets = Assets(this);
-  late final Valuations valuations = Valuations(this);
+  late final AssetValuations assetValuations = AssetValuations(this);
   late final Securities securities = Securities(this);
   late final Categories categories = Categories(this);
   late final Transactions transactions = Transactions(this);
@@ -11507,12 +11505,14 @@ abstract class _$AppDB extends GeneratedDatabase {
     'idx_exchangeRates_currencyCode_date',
     'CREATE UNIQUE INDEX idx_exchangeRates_currencyCode_date ON exchangeRates (currencyCode, date DESC)',
   );
-  late final Index idxValuationsAssetIdDate = Index(
-    'idx_valuations_assetId_date',
-    'CREATE UNIQUE INDEX idx_valuations_assetId_date ON valuations (assetId, date DESC)',
+  late final Index idxAssetValuationsAssetIdDate = Index(
+    'idx_assetValuations_assetId_date',
+    'CREATE UNIQUE INDEX idx_assetValuations_assetId_date ON assetValuations (assetId, date DESC)',
   );
-  late final SecurityPriceHistory securityPriceHistory = SecurityPriceHistory(
-    this,
+  late final SecurityPrices securityPrices = SecurityPrices(this);
+  late final Index idxSecurityPricesSecurityIDDate = Index(
+    'idx_securityPrices_securityID_date',
+    'CREATE UNIQUE INDEX idx_securityPrices_securityID_date ON securityPrices (securityID, date DESC)',
   );
   late final Taxonomies taxonomies = Taxonomies(this);
   late final TaxonomyCategories taxonomyCategories = TaxonomyCategories(this);
@@ -11727,33 +11727,35 @@ abstract class _$AppDB extends GeneratedDatabase {
     );
   }
 
-  Selectable<ValuationInDB> getValuationsForAsset({required String assetId}) {
-    return customSelect(
-      'SELECT * FROM valuations WHERE assetId = ?1 ORDER BY date DESC',
-      variables: [Variable<String>(assetId)],
-      readsFrom: {valuations},
-    ).asyncMap(valuations.mapFromRow);
-  }
-
-  Selectable<ValuationInDB> getLatestValuationForAsset({
+  Selectable<AssetValuationInDB> getValuationsForAsset({
     required String assetId,
   }) {
     return customSelect(
-      'SELECT * FROM valuations WHERE assetId = ?1 ORDER BY date DESC LIMIT 1',
+      'SELECT * FROM assetValuations WHERE assetId = ?1 ORDER BY date DESC',
       variables: [Variable<String>(assetId)],
-      readsFrom: {valuations},
-    ).asyncMap(valuations.mapFromRow);
+      readsFrom: {assetValuations},
+    ).asyncMap(assetValuations.mapFromRow);
   }
 
-  Selectable<ValuationInDB> getLatestValuationForAssetAtDate({
+  Selectable<AssetValuationInDB> getLatestValuationForAsset({
+    required String assetId,
+  }) {
+    return customSelect(
+      'SELECT * FROM assetValuations WHERE assetId = ?1 ORDER BY date DESC LIMIT 1',
+      variables: [Variable<String>(assetId)],
+      readsFrom: {assetValuations},
+    ).asyncMap(assetValuations.mapFromRow);
+  }
+
+  Selectable<AssetValuationInDB> getLatestValuationForAssetAtDate({
     required String assetId,
     required DateTime date,
   }) {
     return customSelect(
-      'SELECT * FROM valuations WHERE assetId = ?1 AND date <= ?2 ORDER BY date DESC LIMIT 1',
+      'SELECT * FROM assetValuations WHERE assetId = ?1 AND date <= ?2 ORDER BY date DESC LIMIT 1',
       variables: [Variable<String>(assetId), Variable<DateTime>(date)],
-      readsFrom: {valuations},
-    ).asyncMap(valuations.mapFromRow);
+      readsFrom: {assetValuations},
+    ).asyncMap(assetValuations.mapFromRow);
   }
 
   Selectable<MoneyTransaction> getTransactionsWithFullData({
@@ -12250,7 +12252,7 @@ abstract class _$AppDB extends GeneratedDatabase {
     accounts,
     debts,
     assets,
-    valuations,
+    assetValuations,
     securities,
     categories,
     transactions,
@@ -12262,8 +12264,9 @@ abstract class _$AppDB extends GeneratedDatabase {
     goals,
     savedFilters,
     idxExchangeRatesCurrencyCodeDate,
-    idxValuationsAssetIdDate,
-    securityPriceHistory,
+    idxAssetValuationsAssetIdDate,
+    securityPrices,
+    idxSecurityPricesSecurityIDDate,
     taxonomies,
     taxonomyCategories,
     idxTaxonomyCategoriesTaxonomyID,
@@ -12339,14 +12342,14 @@ abstract class _$AppDB extends GeneratedDatabase {
         'assets',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('valuations', kind: UpdateKind.delete)],
+      result: [TableUpdate('assetValuations', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'assets',
         limitUpdateKind: UpdateKind.update,
       ),
-      result: [TableUpdate('valuations', kind: UpdateKind.update)],
+      result: [TableUpdate('assetValuations', kind: UpdateKind.update)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -12535,14 +12538,14 @@ abstract class _$AppDB extends GeneratedDatabase {
         'securities',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('securityPriceHistory', kind: UpdateKind.delete)],
+      result: [TableUpdate('securityPrices', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'securities',
         limitUpdateKind: UpdateKind.update,
       ),
-      result: [TableUpdate('securityPriceHistory', kind: UpdateKind.update)],
+      result: [TableUpdate('securityPrices', kind: UpdateKind.update)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -14720,19 +14723,21 @@ final class $AssetsReferences
     );
   }
 
-  static MultiTypedResultKey<Valuations, List<ValuationInDB>>
-  _valuationsRefsTable(_$AppDB db) => MultiTypedResultKey.fromTable(
-    db.valuations,
-    aliasName: 'assets__id__valuations__assetId',
+  static MultiTypedResultKey<AssetValuations, List<AssetValuationInDB>>
+  _assetValuationsRefsTable(_$AppDB db) => MultiTypedResultKey.fromTable(
+    db.assetValuations,
+    aliasName: 'assets__id__assetValuations__assetId',
   );
 
-  $ValuationsProcessedTableManager get valuationsRefs {
-    final manager = $ValuationsTableManager(
+  $AssetValuationsProcessedTableManager get assetValuationsRefs {
+    final manager = $AssetValuationsTableManager(
       $_db,
-      $_db.valuations,
+      $_db.assetValuations,
     ).filter((f) => f.assetId.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_valuationsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(
+      _assetValuationsRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -14842,22 +14847,22 @@ class $AssetsFilterComposer extends Composer<_$AppDB, Assets> {
     return composer;
   }
 
-  Expression<bool> valuationsRefs(
-    Expression<bool> Function($ValuationsFilterComposer f) f,
+  Expression<bool> assetValuationsRefs(
+    Expression<bool> Function($AssetValuationsFilterComposer f) f,
   ) {
-    final $ValuationsFilterComposer composer = $composerBuilder(
+    final $AssetValuationsFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.valuations,
+      referencedTable: $db.assetValuations,
       getReferencedColumn: (t) => t.assetId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $ValuationsFilterComposer(
+          }) => $AssetValuationsFilterComposer(
             $db: $db,
-            $table: $db.valuations,
+            $table: $db.assetValuations,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -15056,22 +15061,22 @@ class $AssetsAnnotationComposer extends Composer<_$AppDB, Assets> {
     return composer;
   }
 
-  Expression<T> valuationsRefs<T extends Object>(
-    Expression<T> Function($ValuationsAnnotationComposer a) f,
+  Expression<T> assetValuationsRefs<T extends Object>(
+    Expression<T> Function($AssetValuationsAnnotationComposer a) f,
   ) {
-    final $ValuationsAnnotationComposer composer = $composerBuilder(
+    final $AssetValuationsAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.valuations,
+      referencedTable: $db.assetValuations,
       getReferencedColumn: (t) => t.assetId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $ValuationsAnnotationComposer(
+          }) => $AssetValuationsAnnotationComposer(
             $db: $db,
-            $table: $db.valuations,
+            $table: $db.assetValuations,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -15123,7 +15128,7 @@ class $AssetsTableManager
           PrefetchHooks Function({
             bool currencyId,
             bool linkedDebtId,
-            bool valuationsRefs,
+            bool assetValuationsRefs,
             bool transactionsRefs,
           })
         > {
@@ -15189,13 +15194,13 @@ class $AssetsTableManager
               ({
                 currencyId = false,
                 linkedDebtId = false,
-                valuationsRefs = false,
+                assetValuationsRefs = false,
                 transactionsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
-                    if (valuationsRefs) db.valuations,
+                    if (assetValuationsRefs) db.assetValuations,
                     if (transactionsRefs) db.transactions,
                   ],
                   addJoins:
@@ -15245,17 +15250,20 @@ class $AssetsTableManager
                       },
                   getPrefetchedDataCallback: (items) async {
                     return [
-                      if (valuationsRefs)
+                      if (assetValuationsRefs)
                         await $_getPrefetchedData<
                           AssetInDB,
                           Assets,
-                          ValuationInDB
+                          AssetValuationInDB
                         >(
                           currentTable: table,
                           referencedTable: $AssetsReferences
-                              ._valuationsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $AssetsReferences(db, table, p0).valuationsRefs,
+                              ._assetValuationsRefsTable(db),
+                          managerFromTypedResult: (p0) => $AssetsReferences(
+                            db,
+                            table,
+                            p0,
+                          ).assetValuationsRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.assetId == item.id,
@@ -15302,20 +15310,20 @@ typedef $AssetsProcessedTableManager =
       PrefetchHooks Function({
         bool currencyId,
         bool linkedDebtId,
-        bool valuationsRefs,
+        bool assetValuationsRefs,
         bool transactionsRefs,
       })
     >;
-typedef $ValuationsCreateCompanionBuilder =
-    ValuationsCompanion Function({
+typedef $AssetValuationsCreateCompanionBuilder =
+    AssetValuationsCompanion Function({
       required String id,
       required String assetId,
       required DateTime date,
       required double value,
       Value<int> rowid,
     });
-typedef $ValuationsUpdateCompanionBuilder =
-    ValuationsCompanion Function({
+typedef $AssetValuationsUpdateCompanionBuilder =
+    AssetValuationsCompanion Function({
       Value<String> id,
       Value<String> assetId,
       Value<DateTime> date,
@@ -15323,12 +15331,12 @@ typedef $ValuationsUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-final class $ValuationsReferences
-    extends BaseReferences<_$AppDB, Valuations, ValuationInDB> {
-  $ValuationsReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $AssetValuationsReferences
+    extends BaseReferences<_$AppDB, AssetValuations, AssetValuationInDB> {
+  $AssetValuationsReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static Assets _assetIdTable(_$AppDB db) =>
-      db.assets.createAlias('valuations__assetId__assets__id');
+      db.assets.createAlias('assetValuations__assetId__assets__id');
 
   $AssetsProcessedTableManager get assetId {
     final $_column = $_itemColumn<String>('assetId')!;
@@ -15345,8 +15353,9 @@ final class $ValuationsReferences
   }
 }
 
-class $ValuationsFilterComposer extends Composer<_$AppDB, Valuations> {
-  $ValuationsFilterComposer({
+class $AssetValuationsFilterComposer
+    extends Composer<_$AppDB, AssetValuations> {
+  $AssetValuationsFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15393,8 +15402,9 @@ class $ValuationsFilterComposer extends Composer<_$AppDB, Valuations> {
   }
 }
 
-class $ValuationsOrderingComposer extends Composer<_$AppDB, Valuations> {
-  $ValuationsOrderingComposer({
+class $AssetValuationsOrderingComposer
+    extends Composer<_$AppDB, AssetValuations> {
+  $AssetValuationsOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15440,8 +15450,9 @@ class $ValuationsOrderingComposer extends Composer<_$AppDB, Valuations> {
   }
 }
 
-class $ValuationsAnnotationComposer extends Composer<_$AppDB, Valuations> {
-  $ValuationsAnnotationComposer({
+class $AssetValuationsAnnotationComposer
+    extends Composer<_$AppDB, AssetValuations> {
+  $AssetValuationsAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15481,32 +15492,32 @@ class $ValuationsAnnotationComposer extends Composer<_$AppDB, Valuations> {
   }
 }
 
-class $ValuationsTableManager
+class $AssetValuationsTableManager
     extends
         RootTableManager<
           _$AppDB,
-          Valuations,
-          ValuationInDB,
-          $ValuationsFilterComposer,
-          $ValuationsOrderingComposer,
-          $ValuationsAnnotationComposer,
-          $ValuationsCreateCompanionBuilder,
-          $ValuationsUpdateCompanionBuilder,
-          (ValuationInDB, $ValuationsReferences),
-          ValuationInDB,
+          AssetValuations,
+          AssetValuationInDB,
+          $AssetValuationsFilterComposer,
+          $AssetValuationsOrderingComposer,
+          $AssetValuationsAnnotationComposer,
+          $AssetValuationsCreateCompanionBuilder,
+          $AssetValuationsUpdateCompanionBuilder,
+          (AssetValuationInDB, $AssetValuationsReferences),
+          AssetValuationInDB,
           PrefetchHooks Function({bool assetId})
         > {
-  $ValuationsTableManager(_$AppDB db, Valuations table)
+  $AssetValuationsTableManager(_$AppDB db, AssetValuations table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $ValuationsFilterComposer($db: db, $table: table),
+              $AssetValuationsFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $ValuationsOrderingComposer($db: db, $table: table),
+              $AssetValuationsOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $ValuationsAnnotationComposer($db: db, $table: table),
+              $AssetValuationsAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
@@ -15514,7 +15525,7 @@ class $ValuationsTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<double> value = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => ValuationsCompanion(
+              }) => AssetValuationsCompanion(
                 id: id,
                 assetId: assetId,
                 date: date,
@@ -15528,7 +15539,7 @@ class $ValuationsTableManager
                 required DateTime date,
                 required double value,
                 Value<int> rowid = const Value.absent(),
-              }) => ValuationsCompanion.insert(
+              }) => AssetValuationsCompanion.insert(
                 id: id,
                 assetId: assetId,
                 date: date,
@@ -15537,8 +15548,10 @@ class $ValuationsTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) =>
-                    (e.readTable(table), $ValuationsReferences(db, table, e)),
+                (e) => (
+                  e.readTable(table),
+                  $AssetValuationsReferences(db, table, e),
+                ),
               )
               .toList(),
           prefetchHooksCallback: ({assetId = false}) {
@@ -15566,9 +15579,9 @@ class $ValuationsTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.assetId,
-                                referencedTable: $ValuationsReferences
+                                referencedTable: $AssetValuationsReferences
                                     ._assetIdTable(db),
-                                referencedColumn: $ValuationsReferences
+                                referencedColumn: $AssetValuationsReferences
                                     ._assetIdTable(db)
                                     .id,
                               )
@@ -15586,18 +15599,18 @@ class $ValuationsTableManager
       );
 }
 
-typedef $ValuationsProcessedTableManager =
+typedef $AssetValuationsProcessedTableManager =
     ProcessedTableManager<
       _$AppDB,
-      Valuations,
-      ValuationInDB,
-      $ValuationsFilterComposer,
-      $ValuationsOrderingComposer,
-      $ValuationsAnnotationComposer,
-      $ValuationsCreateCompanionBuilder,
-      $ValuationsUpdateCompanionBuilder,
-      (ValuationInDB, $ValuationsReferences),
-      ValuationInDB,
+      AssetValuations,
+      AssetValuationInDB,
+      $AssetValuationsFilterComposer,
+      $AssetValuationsOrderingComposer,
+      $AssetValuationsAnnotationComposer,
+      $AssetValuationsCreateCompanionBuilder,
+      $AssetValuationsUpdateCompanionBuilder,
+      (AssetValuationInDB, $AssetValuationsReferences),
+      AssetValuationInDB,
       PrefetchHooks Function({bool assetId})
     >;
 typedef $SecuritiesCreateCompanionBuilder =
@@ -15668,24 +15681,19 @@ final class $SecuritiesReferences
     );
   }
 
-  static MultiTypedResultKey<
-    SecurityPriceHistory,
-    List<SecurityPriceHistoryInDB>
-  >
-  _securityPriceHistoryRefsTable(_$AppDB db) => MultiTypedResultKey.fromTable(
-    db.securityPriceHistory,
-    aliasName: 'securities__id__securityPriceHistory__securityID',
+  static MultiTypedResultKey<SecurityPrices, List<SecurityPriceInDB>>
+  _securityPricesRefsTable(_$AppDB db) => MultiTypedResultKey.fromTable(
+    db.securityPrices,
+    aliasName: 'securities__id__securityPrices__securityID',
   );
 
-  $SecurityPriceHistoryProcessedTableManager get securityPriceHistoryRefs {
-    final manager = $SecurityPriceHistoryTableManager(
+  $SecurityPricesProcessedTableManager get securityPricesRefs {
+    final manager = $SecurityPricesTableManager(
       $_db,
-      $_db.securityPriceHistory,
+      $_db.securityPrices,
     ).filter((f) => f.securityID.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(
-      _securityPriceHistoryRefsTable($_db),
-    );
+    final cache = $_typedResult.readTableOrNull(_securityPricesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -15858,22 +15866,22 @@ class $SecuritiesFilterComposer extends Composer<_$AppDB, Securities> {
     return f(composer);
   }
 
-  Expression<bool> securityPriceHistoryRefs(
-    Expression<bool> Function($SecurityPriceHistoryFilterComposer f) f,
+  Expression<bool> securityPricesRefs(
+    Expression<bool> Function($SecurityPricesFilterComposer f) f,
   ) {
-    final $SecurityPriceHistoryFilterComposer composer = $composerBuilder(
+    final $SecurityPricesFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.securityPriceHistory,
+      referencedTable: $db.securityPrices,
       getReferencedColumn: (t) => t.securityID,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $SecurityPriceHistoryFilterComposer(
+          }) => $SecurityPricesFilterComposer(
             $db: $db,
-            $table: $db.securityPriceHistory,
+            $table: $db.securityPrices,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16122,22 +16130,22 @@ class $SecuritiesAnnotationComposer extends Composer<_$AppDB, Securities> {
     return f(composer);
   }
 
-  Expression<T> securityPriceHistoryRefs<T extends Object>(
-    Expression<T> Function($SecurityPriceHistoryAnnotationComposer a) f,
+  Expression<T> securityPricesRefs<T extends Object>(
+    Expression<T> Function($SecurityPricesAnnotationComposer a) f,
   ) {
-    final $SecurityPriceHistoryAnnotationComposer composer = $composerBuilder(
+    final $SecurityPricesAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.securityPriceHistory,
+      referencedTable: $db.securityPrices,
       getReferencedColumn: (t) => t.securityID,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $SecurityPriceHistoryAnnotationComposer(
+          }) => $SecurityPricesAnnotationComposer(
             $db: $db,
-            $table: $db.securityPriceHistory,
+            $table: $db.securityPrices,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16240,7 +16248,7 @@ class $SecuritiesTableManager
           PrefetchHooks Function({
             bool currencyId,
             bool transactionsRefs,
-            bool securityPriceHistoryRefs,
+            bool securityPricesRefs,
             bool securityTaxonomyAssignmentsRefs,
             bool holdingsRefs,
             bool holdingSnapshotsRefs,
@@ -16319,7 +16327,7 @@ class $SecuritiesTableManager
               ({
                 currencyId = false,
                 transactionsRefs = false,
-                securityPriceHistoryRefs = false,
+                securityPricesRefs = false,
                 securityTaxonomyAssignmentsRefs = false,
                 holdingsRefs = false,
                 holdingSnapshotsRefs = false,
@@ -16328,7 +16336,7 @@ class $SecuritiesTableManager
                   db: db,
                   explicitlyWatchedTables: [
                     if (transactionsRefs) db.transactions,
-                    if (securityPriceHistoryRefs) db.securityPriceHistory,
+                    if (securityPricesRefs) db.securityPrices,
                     if (securityTaxonomyAssignmentsRefs)
                       db.securityTaxonomyAssignments,
                     if (holdingsRefs) db.holdings,
@@ -16388,20 +16396,20 @@ class $SecuritiesTableManager
                               ),
                           typedResults: items,
                         ),
-                      if (securityPriceHistoryRefs)
+                      if (securityPricesRefs)
                         await $_getPrefetchedData<
                           SecurityInDB,
                           Securities,
-                          SecurityPriceHistoryInDB
+                          SecurityPriceInDB
                         >(
                           currentTable: table,
                           referencedTable: $SecuritiesReferences
-                              ._securityPriceHistoryRefsTable(db),
+                              ._securityPricesRefsTable(db),
                           managerFromTypedResult: (p0) => $SecuritiesReferences(
                             db,
                             table,
                             p0,
-                          ).securityPriceHistoryRefs,
+                          ).securityPricesRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.securityID == item.id,
@@ -16488,7 +16496,7 @@ typedef $SecuritiesProcessedTableManager =
       PrefetchHooks Function({
         bool currencyId,
         bool transactionsRefs,
-        bool securityPriceHistoryRefs,
+        bool securityPricesRefs,
         bool securityTaxonomyAssignmentsRefs,
         bool holdingsRefs,
         bool holdingSnapshotsRefs,
@@ -20680,16 +20688,16 @@ typedef $SavedFiltersProcessedTableManager =
       SavedFilterInDB,
       PrefetchHooks Function({bool filterID})
     >;
-typedef $SecurityPriceHistoryCreateCompanionBuilder =
-    SecurityPriceHistoryCompanion Function({
+typedef $SecurityPricesCreateCompanionBuilder =
+    SecurityPricesCompanion Function({
       required String id,
       required String securityID,
       required DateTime date,
       required double price,
       Value<int> rowid,
     });
-typedef $SecurityPriceHistoryUpdateCompanionBuilder =
-    SecurityPriceHistoryCompanion Function({
+typedef $SecurityPricesUpdateCompanionBuilder =
+    SecurityPricesCompanion Function({
       Value<String> id,
       Value<String> securityID,
       Value<DateTime> date,
@@ -20697,22 +20705,12 @@ typedef $SecurityPriceHistoryUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-final class $SecurityPriceHistoryReferences
-    extends
-        BaseReferences<
-          _$AppDB,
-          SecurityPriceHistory,
-          SecurityPriceHistoryInDB
-        > {
-  $SecurityPriceHistoryReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
+final class $SecurityPricesReferences
+    extends BaseReferences<_$AppDB, SecurityPrices, SecurityPriceInDB> {
+  $SecurityPricesReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static Securities _securityIDTable(_$AppDB db) => db.securities.createAlias(
-    'securityPriceHistory__securityID__securities__id',
-  );
+  static Securities _securityIDTable(_$AppDB db) =>
+      db.securities.createAlias('securityPrices__securityID__securities__id');
 
   $SecuritiesProcessedTableManager get securityID {
     final $_column = $_itemColumn<String>('securityID')!;
@@ -20729,9 +20727,8 @@ final class $SecurityPriceHistoryReferences
   }
 }
 
-class $SecurityPriceHistoryFilterComposer
-    extends Composer<_$AppDB, SecurityPriceHistory> {
-  $SecurityPriceHistoryFilterComposer({
+class $SecurityPricesFilterComposer extends Composer<_$AppDB, SecurityPrices> {
+  $SecurityPricesFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -20743,10 +20740,11 @@ class $SecurityPriceHistoryFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get date =>
+      $composableBuilder(
+        column: $table.date,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<double> get price => $composableBuilder(
     column: $table.price,
@@ -20777,9 +20775,9 @@ class $SecurityPriceHistoryFilterComposer
   }
 }
 
-class $SecurityPriceHistoryOrderingComposer
-    extends Composer<_$AppDB, SecurityPriceHistory> {
-  $SecurityPriceHistoryOrderingComposer({
+class $SecurityPricesOrderingComposer
+    extends Composer<_$AppDB, SecurityPrices> {
+  $SecurityPricesOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -20791,7 +20789,7 @@ class $SecurityPriceHistoryOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get date => $composableBuilder(
+  ColumnOrderings<String> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
   );
@@ -20825,9 +20823,9 @@ class $SecurityPriceHistoryOrderingComposer
   }
 }
 
-class $SecurityPriceHistoryAnnotationComposer
-    extends Composer<_$AppDB, SecurityPriceHistory> {
-  $SecurityPriceHistoryAnnotationComposer({
+class $SecurityPricesAnnotationComposer
+    extends Composer<_$AppDB, SecurityPrices> {
+  $SecurityPricesAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -20837,7 +20835,7 @@ class $SecurityPriceHistoryAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
+  GeneratedColumnWithTypeConverter<DateTime, String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
   GeneratedColumn<double> get price =>
@@ -20867,32 +20865,32 @@ class $SecurityPriceHistoryAnnotationComposer
   }
 }
 
-class $SecurityPriceHistoryTableManager
+class $SecurityPricesTableManager
     extends
         RootTableManager<
           _$AppDB,
-          SecurityPriceHistory,
-          SecurityPriceHistoryInDB,
-          $SecurityPriceHistoryFilterComposer,
-          $SecurityPriceHistoryOrderingComposer,
-          $SecurityPriceHistoryAnnotationComposer,
-          $SecurityPriceHistoryCreateCompanionBuilder,
-          $SecurityPriceHistoryUpdateCompanionBuilder,
-          (SecurityPriceHistoryInDB, $SecurityPriceHistoryReferences),
-          SecurityPriceHistoryInDB,
+          SecurityPrices,
+          SecurityPriceInDB,
+          $SecurityPricesFilterComposer,
+          $SecurityPricesOrderingComposer,
+          $SecurityPricesAnnotationComposer,
+          $SecurityPricesCreateCompanionBuilder,
+          $SecurityPricesUpdateCompanionBuilder,
+          (SecurityPriceInDB, $SecurityPricesReferences),
+          SecurityPriceInDB,
           PrefetchHooks Function({bool securityID})
         > {
-  $SecurityPriceHistoryTableManager(_$AppDB db, SecurityPriceHistory table)
+  $SecurityPricesTableManager(_$AppDB db, SecurityPrices table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $SecurityPriceHistoryFilterComposer($db: db, $table: table),
+              $SecurityPricesFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $SecurityPriceHistoryOrderingComposer($db: db, $table: table),
+              $SecurityPricesOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $SecurityPriceHistoryAnnotationComposer($db: db, $table: table),
+              $SecurityPricesAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
@@ -20900,7 +20898,7 @@ class $SecurityPriceHistoryTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<double> price = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => SecurityPriceHistoryCompanion(
+              }) => SecurityPricesCompanion(
                 id: id,
                 securityID: securityID,
                 date: date,
@@ -20914,7 +20912,7 @@ class $SecurityPriceHistoryTableManager
                 required DateTime date,
                 required double price,
                 Value<int> rowid = const Value.absent(),
-              }) => SecurityPriceHistoryCompanion.insert(
+              }) => SecurityPricesCompanion.insert(
                 id: id,
                 securityID: securityID,
                 date: date,
@@ -20925,7 +20923,7 @@ class $SecurityPriceHistoryTableManager
               .map(
                 (e) => (
                   e.readTable(table),
-                  $SecurityPriceHistoryReferences(db, table, e),
+                  $SecurityPricesReferences(db, table, e),
                 ),
               )
               .toList(),
@@ -20954,12 +20952,11 @@ class $SecurityPriceHistoryTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.securityID,
-                                referencedTable: $SecurityPriceHistoryReferences
+                                referencedTable: $SecurityPricesReferences
                                     ._securityIDTable(db),
-                                referencedColumn:
-                                    $SecurityPriceHistoryReferences
-                                        ._securityIDTable(db)
-                                        .id,
+                                referencedColumn: $SecurityPricesReferences
+                                    ._securityIDTable(db)
+                                    .id,
                               )
                               as T;
                     }
@@ -20975,18 +20972,18 @@ class $SecurityPriceHistoryTableManager
       );
 }
 
-typedef $SecurityPriceHistoryProcessedTableManager =
+typedef $SecurityPricesProcessedTableManager =
     ProcessedTableManager<
       _$AppDB,
-      SecurityPriceHistory,
-      SecurityPriceHistoryInDB,
-      $SecurityPriceHistoryFilterComposer,
-      $SecurityPriceHistoryOrderingComposer,
-      $SecurityPriceHistoryAnnotationComposer,
-      $SecurityPriceHistoryCreateCompanionBuilder,
-      $SecurityPriceHistoryUpdateCompanionBuilder,
-      (SecurityPriceHistoryInDB, $SecurityPriceHistoryReferences),
-      SecurityPriceHistoryInDB,
+      SecurityPrices,
+      SecurityPriceInDB,
+      $SecurityPricesFilterComposer,
+      $SecurityPricesOrderingComposer,
+      $SecurityPricesAnnotationComposer,
+      $SecurityPricesCreateCompanionBuilder,
+      $SecurityPricesUpdateCompanionBuilder,
+      (SecurityPriceInDB, $SecurityPricesReferences),
+      SecurityPriceInDB,
       PrefetchHooks Function({bool securityID})
     >;
 typedef $TaxonomiesCreateCompanionBuilder =
@@ -23915,8 +23912,8 @@ class $AppDBManager {
       $AccountsTableManager(_db, _db.accounts);
   $DebtsTableManager get debts => $DebtsTableManager(_db, _db.debts);
   $AssetsTableManager get assets => $AssetsTableManager(_db, _db.assets);
-  $ValuationsTableManager get valuations =>
-      $ValuationsTableManager(_db, _db.valuations);
+  $AssetValuationsTableManager get assetValuations =>
+      $AssetValuationsTableManager(_db, _db.assetValuations);
   $SecuritiesTableManager get securities =>
       $SecuritiesTableManager(_db, _db.securities);
   $CategoriesTableManager get categories =>
@@ -23934,8 +23931,8 @@ class $AppDBManager {
   $GoalsTableManager get goals => $GoalsTableManager(_db, _db.goals);
   $SavedFiltersTableManager get savedFilters =>
       $SavedFiltersTableManager(_db, _db.savedFilters);
-  $SecurityPriceHistoryTableManager get securityPriceHistory =>
-      $SecurityPriceHistoryTableManager(_db, _db.securityPriceHistory);
+  $SecurityPricesTableManager get securityPrices =>
+      $SecurityPricesTableManager(_db, _db.securityPrices);
   $TaxonomiesTableManager get taxonomies =>
       $TaxonomiesTableManager(_db, _db.taxonomies);
   $TaxonomyCategoriesTableManager get taxonomyCategories =>

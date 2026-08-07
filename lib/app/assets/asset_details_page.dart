@@ -68,7 +68,7 @@ class AssetDetailsPage extends StatefulWidget {
 enum _DetailTab { about, transactions, history }
 
 class _AssetDetailsPageState extends State<AssetDetailsPage> {
-  ValuationInDB? _hoveredValuation;
+  AssetValuationInDB? _hoveredValuation;
   double? _hoveredNetContribution;
   DatePeriodState _dateRange = const DatePeriodState(
     datePeriod: DatePeriod.allTime(),
@@ -89,14 +89,14 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   /// it's timestamped with the exact creation time while manually-added
   /// valuations are timestamped at midnight, it could sort *after* that real
   /// valuation and silently override it when the chart samples that day.
-  List<ValuationInDB> _valuationsWithInitial(List<ValuationInDB> valuations) {
+  List<AssetValuationInDB> _valuationsWithInitial(List<AssetValuationInDB> valuations) {
     final hasValuationOnCreationDay = valuations.any(
       (v) => v.date.justDay() == widget.asset.creationDate.justDay(),
     );
 
     return [
       if (!hasValuationOnCreationDay)
-        ValuationInDB(
+        AssetValuationInDB(
           id: 'INITIAL_VALUE',
           date: widget.asset.creationDate,
           value: widget.asset.initialValue,
@@ -106,7 +106,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     ]..sort((a, b) => a.date.compareTo(b.date));
   }
 
-  List<ValuationInDB> _buildFilteredChartData(List<ValuationInDB> valuations) {
+  List<AssetValuationInDB> _buildFilteredChartData(List<AssetValuationInDB> valuations) {
     return _dateRange.filterTimeSeries(
       _valuationsWithInitial(valuations),
       dateExtractor: (valuation) => valuation.date,
@@ -114,7 +114,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   }
 
   List<AssetValuationContributionPoint> _buildChartPoints({
-    required List<ValuationInDB> valuations,
+    required List<AssetValuationInDB> valuations,
     required List<MoneyTransaction> transactions,
   }) {
     final allValuations = _valuationsWithInitial(valuations);
@@ -293,7 +293,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     }
   }
 
-  Future<void> _editValuation(ValuationInDB valuation, Asset asset) async {
+  Future<void> _editValuation(AssetValuationInDB valuation, Asset asset) async {
     final t = Translations.of(context);
     final updatedValuation = await showValuationFormDialog(
       context,
@@ -315,7 +315,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     }
   }
 
-  Future<void> _deleteValuation(ValuationInDB valuation) async {
+  Future<void> _deleteValuation(AssetValuationInDB valuation) async {
     final t = Translations.of(context);
     await AssetValuationService.instance.deleteValuation(valuation.id);
     MonekinSnackbar.success(
@@ -323,7 +323,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     );
   }
 
-  Future<void> _deleteAllValuations(List<ValuationInDB> valuations) async {
+  Future<void> _deleteAllValuations(List<AssetValuationInDB> valuations) async {
     final t = Translations.of(context);
     final confirmed = await confirmDialog(
       context,
@@ -400,7 +400,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
       builder: (context, snapshot) {
         final valuations = snapshot.data == null
             ? null
-            : (List<ValuationInDB>.from(snapshot.data!.valuations)
+            : (List<AssetValuationInDB>.from(snapshot.data!.valuations)
                 ..sort((a, b) => b.date.compareTo(a.date)));
 
         final displayValuation = _hoveredValuation ?? valuations?.firstOrNull;
@@ -492,8 +492,8 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
 
   Widget _buildCurrentValueTile(
     BuildContext context,
-    List<ValuationInDB>? valuations,
-    ValuationInDB? displayValuation,
+    List<AssetValuationInDB>? valuations,
+    AssetValuationInDB? displayValuation,
     Asset? asset,
     List<MoneyTransaction>? transactions,
   ) {
@@ -645,7 +645,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
 
   Widget _buildTrendSection(
     BuildContext context, {
-    required List<ValuationInDB>? valuations,
+    required List<AssetValuationInDB>? valuations,
     required List<MoneyTransaction>? transactions,
     required Asset? asset,
     required double currentValue,
@@ -698,7 +698,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   /// hidden behind a bottom sheet.
   Widget _buildPerformanceCard(
     BuildContext context,
-    List<ValuationInDB>? valuations,
+    List<AssetValuationInDB>? valuations,
     List<MoneyTransaction>? transactions,
     Asset? asset,
   ) {
@@ -807,7 +807,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
 
   Widget _buildChartSection(
     BuildContext context,
-    List<ValuationInDB>? valuations,
+    List<AssetValuationInDB>? valuations,
     List<MoneyTransaction>? transactions,
   ) {
     final t = Translations.of(context);
@@ -845,7 +845,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
                 setState(() {
                   _hoveredValuation = point == null
                       ? null
-                      : ValuationInDB(
+                      : AssetValuationInDB(
                           id: 'HOVERED_VALUE',
                           date: point.date,
                           value: point.valuation,
@@ -934,7 +934,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
 
   Widget _buildValuationListSection(
     BuildContext context,
-    List<ValuationInDB>? valuations,
+    List<AssetValuationInDB>? valuations,
     Asset? asset,
   ) {
     final t = Translations.of(context);
@@ -950,12 +950,12 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
       );
     }
 
-    final sorted = List<ValuationInDB>.from(valuations)
+    final sorted = List<AssetValuationInDB>.from(valuations)
       ..sort((a, b) => b.date.justDay().compareTo(a.date.justDay()));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: EditableTimeSeriesCard<ValuationInDB>(
+      child: EditableTimeSeriesCard<AssetValuationInDB>(
         title: t.assets.valuation.history,
         headerAction: CardHeaderAction(
           text: t.ui_actions.add,
@@ -1025,8 +1025,8 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
 
   Widget _buildTopMobile(
     BuildContext context,
-    List<ValuationInDB>? valuations,
-    ValuationInDB? displayValuation,
+    List<AssetValuationInDB>? valuations,
+    AssetValuationInDB? displayValuation,
     Asset? asset,
     List<MoneyTransaction>? transactions,
   ) {
@@ -1058,8 +1058,8 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
 
   Widget _buildTopDesktop(
     BuildContext context,
-    List<ValuationInDB>? valuations,
-    ValuationInDB? displayValuation,
+    List<AssetValuationInDB>? valuations,
+    AssetValuationInDB? displayValuation,
     Asset? asset,
     List<MoneyTransaction>? transactions,
   ) {
@@ -1107,7 +1107,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   /// section (see [_buildDesktopBody]) instead of behind a tab.
   Widget _buildSegmentedSection(
     BuildContext context,
-    List<ValuationInDB>? valuations,
+    List<AssetValuationInDB>? valuations,
     List<MoneyTransaction>? transactions,
     Asset? asset, {
     bool includeAboutTab = true,
@@ -1171,7 +1171,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   /// tabs like on mobile.
   Widget _buildDesktopBody(
     BuildContext context,
-    List<ValuationInDB>? valuations,
+    List<AssetValuationInDB>? valuations,
     List<MoneyTransaction>? transactions,
     Asset asset,
   ) {

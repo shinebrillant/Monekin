@@ -160,6 +160,49 @@ void main() {
     expect(sec!.currentPrice, 270);
   });
 
+  test('upsertPricePoint overwrites the price on an existing day', () async {
+    await service.insertSecurity(buildSecurity());
+    await service.addPricePoint(securityId, 10, DateTime(2026, 1, 1));
+
+    // Adding a brand-new point (fresh id) on a day that already has one must
+    // overwrite its value, not create a second observation for that day.
+    await service.upsertPricePoint(
+      SecurityPriceInDB(
+        id: 'another-id',
+        securityID: securityId,
+        date: DateTime(2026, 1, 1),
+        price: 15,
+      ),
+    );
+
+    final history = await service.getPriceHistory(securityId).first;
+    expect(history.length, 1);
+    expect(history.single.price, 15);
+  });
+
+  test(
+    'upsertPricePoint moving a point onto another day leaves no duplicate',
+    () async {
+      await service.insertSecurity(buildSecurity());
+      await service.addPricePoint(securityId, 10, DateTime(2026, 1, 1));
+      await service.addPricePoint(securityId, 20, DateTime(2026, 2, 1));
+
+      final history = await service.getPriceHistory(securityId).first;
+      final janPoint = history.firstWhere((p) => p.date.month == 1);
+
+      // Editing the January point onto the February day must merge them into a
+      // single observation instead of leaving the original January row behind.
+      await service.upsertPricePoint(
+        janPoint.copyWith(date: DateTime(2026, 2, 1), price: 25),
+      );
+
+      final updated = await service.getPriceHistory(securityId).first;
+      expect(updated.length, 1);
+      expect(updated.single.date.month, 2);
+      expect(updated.single.price, 25);
+    },
+  );
+
   test(
     'getPriceAtDate returns the latest observation up to the date',
     () async {

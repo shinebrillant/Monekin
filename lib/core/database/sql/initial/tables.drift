@@ -152,12 +152,12 @@ CREATE TABLE IF NOT EXISTS assets (
     linkedDebtId TEXT REFERENCES debts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) AS AssetInDB;
 
-CREATE UNIQUE INDEX idx_valuations_assetId_date ON valuations(assetId, date DESC);
+CREATE UNIQUE INDEX idx_assetValuations_assetId_date ON assetValuations(assetId, date DESC);
 
-CREATE TABLE IF NOT EXISTS valuations (
+CREATE TABLE IF NOT EXISTS assetValuations (
     id TEXT NOT NULL PRIMARY KEY,
 
-    -- ID of the asset this valuation belongs to (mutually exclusive with accountId)
+    -- ID of the asset this valuation belongs to
     assetId TEXT NOT NULL REFERENCES assets(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
     -- Date of this valuation snapshot
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS valuations (
 
     -- Value at the time of this snapshot, in the currency of the account or asset
     value REAL NOT NULL,
-) AS ValuationInDB;
+) AS AssetValuationInDB;
 
 -- A financial instrument (stock, fund, crypto) that can be held inside
 -- investment accounts. The price is shared across all holdings of this security.
@@ -200,17 +200,20 @@ CREATE TABLE IF NOT EXISTS securities (
 -- Manual price observations for a security over time, used to draw the real
 -- price chart. A new row is recorded each time the price is updated. The most
 -- recent point is mirrored into `securities.currentPrice`/`priceDate`.
-CREATE TABLE IF NOT EXISTS securityPriceHistory (
+CREATE TABLE IF NOT EXISTS securityPrices (
     id TEXT NOT NULL PRIMARY KEY,
 
     securityID TEXT NOT NULL REFERENCES securities(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    -- Date of this price observation
-    date DATETIME NOT NULL,
+    -- Day of this price observation (date-only, one observation per day)
+    date TEXT NOT NULL MAPPED BY `const DateTypeConverter()`,
 
     -- Price per unit at that date, in the security currency
     price REAL NOT NULL
-) AS SecurityPriceHistoryInDB;
+) AS SecurityPriceInDB;
+
+CREATE UNIQUE INDEX idx_securityPrices_securityID_date
+ON securityPrices(securityID, date DESC);
 
 -- A user-configurable classification dimension used to categorize securities
 -- for portfolio-composition reporting (e.g. Asset Class, Region, Sector, Risk).

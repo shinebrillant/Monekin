@@ -1052,7 +1052,8 @@
       "PRICE_HISTORY": {
         "add": "Add price",
         "edit": "Edit price",
-        "price": "Price"
+        "price": "Price",
+        "overwrite_warning": "A price already exists on this date. Saving will overwrite it."
       },
       "IMPORT": {
         "title": "Import prices",

@@ -104,9 +104,9 @@ void main() {
 
   Future<void> insertPricePoint(String security, double price, DateTime date) {
     return db
-        .into(db.securityPriceHistory)
+        .into(db.securityPrices)
         .insert(
-          SecurityPriceHistoryInDB(
+          SecurityPriceInDB(
             id: 'sph-${security}_${date.microsecondsSinceEpoch}',
             securityID: security,
             date: date,

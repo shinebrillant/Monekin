@@ -1055,7 +1055,8 @@
       "PRICE_HISTORY": {
         "add": "Añadir precio",
         "edit": "Editar precio",
-        "price": "Precio"
+        "price": "Precio",
+        "overwrite_warning": "Ya existe un precio en esta fecha. Al guardar, se sustituirá."
       },
       "IMPORT": {
         "title": "Importar precios",
@@ -1146,6 +1147,7 @@
       "edit_valuation": "Editar valoración",
       "value": "Valor",
       "net_contribution": "Aportación neta",
+      "net_contribution_help": "El dinero que has aportado a este activo: su valor inicial más cualquier transacción de compra/venta vinculada. Es independiente de los cambios del valor de mercado, que registras manualmente mediante las valoraciones.",
       "value_required": "Por favor introduce un valor",
       "value_invalid": "Por favor ingresa un número válido",
       "update_value_success": "Valoración agregada exitosamente",
