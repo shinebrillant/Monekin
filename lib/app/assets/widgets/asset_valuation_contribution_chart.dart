@@ -32,6 +32,7 @@ class AssetValuationContributionChart extends StatefulWidget {
     this.transactionsLabel,
     this.onHover,
     this.timeRange,
+    this.expand = false,
   });
 
   final List<AssetValuationContributionPoint> points;
@@ -54,6 +55,11 @@ class AssetValuationContributionChart extends StatefulWidget {
 
   final void Function(AssetValuationContributionPoint?)? onHover;
   final DateTimeRange? timeRange;
+
+  /// When true, the chart fills the available vertical space (via an
+  /// [Expanded]) instead of using a fixed height. Used by the desktop layout
+  /// where the chart card stretches to match the height of the info column.
+  final bool expand;
 
   @override
   State<AssetValuationContributionChart> createState() =>
@@ -83,6 +89,10 @@ class _AssetValuationContributionChartState
     final pointsByX = chartSeries.pointsByX;
     final valuationSpots = chartSeries.valuationSpots;
     final contributionSpots = chartSeries.contributionSpots;
+    final domain = computeMonetaryChartYDomain([
+      ...valuationSpots.map((spot) => spot.y),
+      ...contributionSpots.map((spot) => spot.y),
+    ]);
 
     final isNotEnoughData = sortedPoints.length <= 2;
 
@@ -102,6 +112,8 @@ class _AssetValuationContributionChartState
 
     final chart = LineChart(
       LineChartData(
+        minY: isNotEnoughData ? null : domain.minY,
+        maxY: isNotEnoughData ? null : domain.maxY,
         gridData: const FlGridData(show: true, drawVerticalLine: false),
         extraLinesData: markerDates.isEmpty
             ? null
@@ -187,6 +199,8 @@ class _AssetValuationContributionChartState
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
+              applyCutOffY: !isNotEnoughData,
+              cutOffY: domain.areaFillCutoffY,
               color: isNotEnoughData
                   ? colorScheme.outlineVariant.withAlpha(10)
                   : netContributionColor.withAlpha(50),
@@ -204,6 +218,8 @@ class _AssetValuationContributionChartState
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
+              applyCutOffY: !isNotEnoughData,
+              cutOffY: domain.areaFillCutoffY,
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -223,14 +239,16 @@ class _AssetValuationContributionChartState
       ),
     );
 
-    final chartContainer = SizedBox(
-      height:
-          (BreakPoint.of(context).isLargerOrEqualTo(BreakpointID.lg)
-              ? 280
-              : 100) *
-          clampDouble(MediaQuery.of(context).size.height / 800, 0.2, 1),
-      child: chart,
-    );
+    final Widget chartContainer = widget.expand
+        ? chart
+        : SizedBox(
+            height:
+                (BreakPoint.of(context).isLargerOrEqualTo(BreakpointID.lg)
+                    ? 280
+                    : 100) *
+                clampDouble(MediaQuery.of(context).size.height / 800, 0.2, 1),
+            child: chart,
+          );
 
     final interactiveChart = widget.onHover == null
         ? chartContainer
@@ -241,11 +259,11 @@ class _AssetValuationContributionChartState
         : interactiveChart;
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 6,
       children: [
-        chartWithOverlay,
+        widget.expand ? Expanded(child: chartWithOverlay) : chartWithOverlay,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Wrap(

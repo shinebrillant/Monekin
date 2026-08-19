@@ -15,6 +15,7 @@ import 'package:monekin/core/presentation/responsive/breakpoints.dart';
 import 'package:monekin/core/presentation/responsive/responsive_row_column.dart';
 import 'package:monekin/core/presentation/widgets/card_with_header.dart';
 import 'package:monekin/core/presentation/widgets/confirm_dialog.dart';
+import 'package:monekin/core/presentation/widgets/expanding_segmented_tabs.dart';
 import 'package:monekin/core/presentation/widgets/monekin_popup_menu_button.dart';
 import 'package:monekin/core/presentation/widgets/targets/financial_target_card.dart';
 import 'package:monekin/core/presentation/widgets/targets/target_status_card.dart';
@@ -81,21 +82,58 @@ class _BudgetDetailsPageState extends State<BudgetDetailsPage>
 
         final budget = snapshot.data!;
 
+        final isMobile = BreakPoint.of(context).isSmallerThan(BreakpointID.md);
+
+        final segmentedTabs = isMobile
+            ? null
+            : SegmentedTabBar<int>(
+                selected: _tabController.index,
+                onSelected: (value) =>
+                    setState(() => _tabController.index = value),
+                items: [
+                  SegmentedTabItem(
+                    value: 0,
+                    icon: Icons.bar_chart_rounded,
+                    label: t.budgets.details.statistics,
+                  ),
+                  SegmentedTabItem(
+                    value: 1,
+                    icon: Icons.swap_vert_rounded,
+                    label: t.transaction.display(n: 10),
+                  ),
+                ],
+              );
+
         return PageFramework(
-          title: Translations.of(context).budgets.details.title,
-          tabBar: TabBar(
-            controller: _tabController,
-            tabAlignment: BreakPoint.of(context).isSmallerThan(BreakpointID.md)
-                ? TabAlignment.fill
-                : TabAlignment.start,
-            isScrollable: !BreakPoint.of(
-              context,
-            ).isSmallerThan(BreakpointID.md),
-            tabs: [
-              Tab(text: t.budgets.details.statistics),
-              Tab(text: t.transaction.display(n: 10)),
-            ],
+          title: budget.name,
+          subtitle: budget.intervalPeriod == null
+              ? null
+              : Text(budget.intervalPeriod!.allThePeriodsText(context)),
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.2),
+            ),
+            child: Icon(
+              Icons.calculate_rounded,
+              size: 22,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
+          tabBar: isMobile
+              ? TabBar(
+                  controller: _tabController,
+                  tabAlignment: TabAlignment.fill,
+                  isScrollable: false,
+                  tabs: [
+                    Tab(text: t.budgets.details.statistics),
+                    Tab(text: t.transaction.display(n: 10)),
+                  ],
+                )
+              : null,
           appBarActions: [
             MonekinPopupMenuButton(
               actionItems: [
@@ -103,7 +141,7 @@ class _BudgetDetailsPageState extends State<BudgetDetailsPage>
                   label: t.budgets.form.edit,
                   icon: Icons.edit,
                   onClick: () {
-                    RouteUtils.pushRoute(
+                    RouteUtils.showResponsiveForm(
                       BudgetFormPage(
                         prevPage: const BudgetsPage(),
                         budgetToEdit: budget,
@@ -151,11 +189,15 @@ class _BudgetDetailsPageState extends State<BudgetDetailsPage>
               Container(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 decoration: BoxDecoration(color: Theme.of(context).cardColor),
-                child: TargetHeader(target: budget),
+                child: TargetHeader(target: budget, showIdentity: false),
               ),
+              ?segmentedTabs,
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
+                  physics: isMobile
+                      ? null
+                      : const NeverScrollableScrollPhysics(),
                   children: [
                     SingleChildScrollView(
                       padding: const EdgeInsets.all(16),

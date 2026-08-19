@@ -43,6 +43,8 @@
   },
   "GENERAL": {
     "or": "or",
+    "of": "of",
+    "showing": "Showing",
     "understood": "Understood",
     "unspecified": "Unspecified",
     "quick_actions": "Quick actions",
@@ -375,6 +377,18 @@
       "searcher.placeholder": "Search by category, description...",
       "searcher.no-results": "No transactions found matching the search criteria",
       "loading": "Loading more transactions...",
+      "FILTERED_EMPTY": {
+        "title": "No transactions with these filters",
+        "description": {
+          "one": "Your {{n}} transaction is still there — it just doesn't match the current filters. Try widening the range or removing a filter.",
+          "other": "All {{n}} transactions are still there — they just don't match the current filters. Try widening the range or removing a filter."
+        },
+        "clear": {
+          "one": "Remove filter",
+          "other": "Remove the {{n}} filters"
+        },
+        "expand-dates": "Show all dates"
+      },
       "selected.short": {
         "one": "{{n}} selected",
         "other": "{{n}} selected"
@@ -383,6 +397,11 @@
         "one": "{{n}} transaction selected",
         "other": "{{n}} transactions selected"
       },
+      "selected_of": {
+        "one": "{{n}} of {{total}} selected",
+        "other": "{{n}} of {{total}} selected"
+      },
+      "shown": "shown",
       "BULK_EDIT": {
         "dates": "Edit dates",
         "categories": "Edit categories",
@@ -399,6 +418,10 @@
       "from_date_def": "From the {{ date }}",
       "to_date_def": "Up to the {{ date }}",
       "reset": "Reset filters",
+      "inapplicable_here": {
+        "one": "<b>1</b> active filter doesn't apply to this view.",
+        "other": "<b>{{n}}</b> active filters don't apply to this view."
+      },
       "saved": {
         "title": "Saved filters",
         "new_title": "New Filter",
@@ -1018,7 +1041,7 @@
         "col_symbol": "Symbol",
         "total_cost": "Total portfolio cost",
         "save": "Save snapshot",
-        "remove_hint": "To get rid of a position just delete its row: the snapshot is the full photo, not a movement.",
+        "zero_qty_hint": "A quantity of 0 keeps this position in the snapshot. To remove it entirely, delete the row instead.",
         "delete_title": "Delete snapshot?",
         "delete_descr": "This snapshot will be removed. If it was the most recent one, your current positions will fall back to the previous snapshot."
       }
