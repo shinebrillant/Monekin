@@ -545,7 +545,9 @@ class _AssetFormPageState extends State<AssetFormPage> {
             axis: Axis.horizontal,
             expand: _step == 1,
             child: Padding(
-              padding: const EdgeInsets.only(right: 8),
+              // Same inset as the [PersistentFooterButton] next to it, so both
+              // buttons share their margins.
+              padding: const EdgeInsets.all(4),
               child: IconButton.outlined(
                 onPressed: () => _goToStep(0),
                 icon: const Icon(Icons.arrow_back_rounded),
@@ -723,6 +725,9 @@ class _AssetFormPageState extends State<AssetFormPage> {
       },
       child: PageFramework(
         title: pageTitle,
+        // The back gesture moves between the form steps, so the close button
+        // has to dismiss the page explicitly.
+        onClose: RouteUtils.popRoute,
         appBarActions: _hasTypeStep ? [_stepIndicator(_step)] : null,
         persistentFooterButtons: [_buildFooter(t, pageTitle)],
         body: _hasTypeStep

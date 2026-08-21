@@ -16,6 +16,7 @@ class PageFramework extends StatelessWidget {
     this.subtitle,
     this.icon,
     this.leading,
+    this.onClose,
     this.tabBar,
     this.appBarActions,
     this.appBarBackgroundColor,
@@ -32,6 +33,15 @@ class PageFramework extends StatelessWidget {
   final Widget? subtitle;
   final Widget? icon;
   final Widget? leading;
+
+  /// Action of the close (X) affordance shown when the page is presented as a
+  /// modal or a side drawer. Defaults to popping the route.
+  ///
+  /// Pages that intercept the back gesture to navigate inside themselves (e.g.
+  /// wizard steps) should set it, so that closing the page keeps dismissing it
+  /// as a whole instead of behaving like a back action.
+  final VoidCallback? onClose;
+
   final TabBar? tabBar;
   final List<Widget>? appBarActions;
   final Color? appBarBackgroundColor;
@@ -120,7 +130,7 @@ class PageFramework extends StatelessWidget {
       key: ValueKey('AppBar_${title ?? ''}'),
       toolbarHeight: _hasIdentityExtras ? 76 : 56,
       titleSpacing: icon != null ? 0 : null,
-      leading: leading ?? (singleRow ? const CloseButton() : null),
+      leading: leading ?? (singleRow ? CloseButton(onPressed: onClose) : null),
       title: _hasTitle
           ? _buildHeaderContent(context, singleRow: singleRow)
           : null,

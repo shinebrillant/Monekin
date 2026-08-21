@@ -229,7 +229,9 @@ class _CollapsibleMobilePageScaffoldState
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     final leading =
         _page.leading ??
-        (SideDrawerScope.of(context) ? const CloseButton() : null);
+        (SideDrawerScope.of(context)
+            ? CloseButton(onPressed: _page.onClose)
+            : null);
 
     return AppBar(
       key: ValueKey('AppBar_${_page.title ?? ''}'),
