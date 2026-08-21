@@ -46,6 +46,9 @@ class DatePeriodModal extends StatefulWidget {
 }
 
 class _DatePeriodModalState extends State<DatePeriodModal> {
+  final _cyclePeriodicityKey = GlobalKey();
+  final _lastDaysFocusNode = FocusNode();
+
   late DatePeriod toReturn;
 
   @override
@@ -53,6 +56,12 @@ class _DatePeriodModalState extends State<DatePeriodModal> {
     super.initState();
 
     toReturn = widget.initialDatePeriod;
+  }
+
+  @override
+  void dispose() {
+    _lastDaysFocusNode.dispose();
+    super.dispose();
   }
 
   Widget? buildPeriodTypeCardContent(PeriodType periodType) {
@@ -65,12 +74,16 @@ class _DatePeriodModalState extends State<DatePeriodModal> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TappableTextEntry(
+              key: _cyclePeriodicityKey,
               title: toReturn.periodicity.periodText(context, isPlural: true),
               placeholder: t.general.time.periodicity.display,
               showSelectArrow: true,
               onTap: () {
+                final anchorContext =
+                    _cyclePeriodicityKey.currentContext ?? context;
+
                 showDynamicSelectorBottomSheet(
-                  context,
+                  anchorContext,
                   selectorWidget: DynamicSelectorModal(
                     items: Periodicity.values,
                     selectedValue: toReturn.periodicity,
@@ -110,6 +123,7 @@ class _DatePeriodModalState extends State<DatePeriodModal> {
             SizedBox(
               width: 72,
               child: TextFormField(
+                focusNode: _lastDaysFocusNode,
                 initialValue: toReturn.lastDays.toString(),
                 keyboardType: TextInputType.number,
                 maxLength: 3,
@@ -257,6 +271,12 @@ class _DatePeriodModalState extends State<DatePeriodModal> {
                       setState(() {
                         toReturn = toReturn.copyWith(periodType: periodType);
                       });
+
+                      if (periodType == PeriodType.lastDays && isWide) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) _lastDaysFocusNode.requestFocus();
+                        });
+                      }
                     },
                     periodType: periodType,
                     selectedCycle: toReturn.periodType,
