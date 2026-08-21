@@ -69,28 +69,18 @@ So, I decided to create one myself. After months of development and hard work, M
 
 ### 🌟 Why Monekin? 
 
-- **Unlimited Transactions & Multi-Account Management**  
-  Track unlimited transactions across unlimited accounts. Easily switch between accounts to view relevant statistics and keep everything organized.  
-- **Powerful Analytics & Visualizations**  
-  Understand your finances with comprehensive statistics, stunning charts, and customizable insights that help you plan smarter and save better.  
-- **Recurring Transactions**  
-  Seamlessly manage your recurring bills and subscriptions (like streaming services or utilities) with built-in automation tools.
-- **Net Worth & Asset Tracking**
-  Get a 360-degree view of your financial health. Beyond daily spending, you can now track your properties, investments, and total net worth to see how your wealth grows over time.
-- **Investment & Debt Management**
-  Stay on top of your financial obligations and growth. Manage dedicated investment accounts and track your debts with ease, ensuring nothing slips through the cracks of your financial plan.
-- **Custom Categories, Budgets and Goals**  
-  Tailor the app to your needs with customizable and unlimited categories, subcategories, budgets and goals. Choose from hundreds of beautiful icons to make your categories truly yours.  
-- **Multi-Currency Support**  
-  Support for over 50 currencies, with exchange rates that you can customize.
-- **Local Backups & Data Control**  
-  Never lose your data—create unlimited local backups and restore them when you switch devices. No external servers or subscriptions needed.
-- **Works Offline**  
-  Enjoy complete functionality without the need for an internet connection. Manage your finances anytime, anywhere.  
-- **Open Source**  
-  Monekin is fully open-source, fostering trust and allowing the community to contribute, improve, and shape the app's future.  
-- **Free, Forever**  
-  No ads. No hidden fees. Just focus on what matters most: your finances. 
+- **💸 Unlimited Transactions & Accounts** - Track everything across as many accounts as you need, and drill into stats per account.
+- **🔁 Recurring Transactions** - Automate bills and subscriptions (streaming, utilities…) so nothing slips by.
+- **📈 Net Worth & Assets** - A 360° view of your wealth: cash, properties, investments, and debts, and how they grow over time.
+- **💼 Investment Tracking** - Follow stocks, funds, and crypto as a real portfolio, trade by trade or from a simple snapshot of what you hold.
+- **🎯 Budgets & Goals** - Set spending limits and savings goals, and stay on track with clear progress.
+- **📊 Powerful Analytics** - Rich statistics, charts, and a Financial Health score that looks at savings, debt, cash flow, and investing.
+- **🎨 Custom Categories & Icons** - Unlimited categories and subcategories, with hundreds of beautiful icons to make them yours.
+- **💱 Multi-Currency** - 50+ currencies with exchange rates you can customize.
+- **💾 Local Backups & Data Control** - Unlimited local backups you own and restore on any device. No servers, no subscriptions.
+- **📴 Works Offline** - Full functionality with no internet connection required, anytime, anywhere.
+- **🔓 Open Source** - Fully transparent and community-driven, so you can trust it and help shape it.
+- **✨ Free, Forever** - No ads, no hidden fees. Just your finances.
 
 ### 🛠 Tech Stack
 
