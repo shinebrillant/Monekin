@@ -327,6 +327,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     final accountsCard = DashboardAccountList(
       dateRangeService: dateRangeService,
+      maxRowsToShow: isWide ? 5 : 3,
     );
     final healthCard = FinanceHealthCard(dateRangeService: dateRangeService);
     final categoriesCard = _buildCategoriesCard(context);

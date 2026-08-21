@@ -14,16 +14,17 @@ import 'package:monekin/core/routes/route_utils.dart';
 import 'package:monekin/i18n/generated/translations.g.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-/// Maximum number of rows (accounts and/or account groups) shown inline on the
-/// dashboard.
-const _maxRowsToShow = 3;
-
-/// A vertical list of the user's active accounts (up to [_maxRowsToShow] rows),
-/// where the accounts sharing a group are collapsed into an expandable row.
+/// A vertical list of the user's active accounts, where the accounts sharing a
+/// group are collapsed into an expandable row.
 class DashboardAccountList extends StatelessWidget {
-  const DashboardAccountList({super.key, required this.dateRangeService});
+  const DashboardAccountList({
+    super.key,
+    required this.dateRangeService,
+    this.maxRowsToShow = 3,
+  });
 
   final DatePeriodState dateRangeService;
+  final int maxRowsToShow;
 
   void _openCreateAccountForm() {
     RouteUtils.showResponsiveForm(const AccountFormPage());
@@ -41,7 +42,7 @@ class DashboardAccountList extends StatelessWidget {
         final accounts = snapshot.data;
         final rows = accounts == null ? null : groupAccounts(accounts);
         final isEmpty = rows != null && rows.isEmpty;
-        final hasHiddenRows = (rows?.length ?? 0) > _maxRowsToShow;
+        final hasHiddenRows = (rows?.length ?? 0) > maxRowsToShow;
 
         return CardWithHeader(
           title: t.home.my_accounts,
@@ -73,7 +74,9 @@ class DashboardAccountList extends StatelessWidget {
 
     if (rows == null) {
       return Column(
-        children: [for (var i = 0; i < 3; i++) const _AccountRowSkeleton()],
+        children: [
+          for (var i = 0; i < maxRowsToShow; i++) const _AccountRowSkeleton(),
+        ],
       );
     }
 
@@ -93,7 +96,7 @@ class DashboardAccountList extends StatelessWidget {
 
     return Column(
       children: [
-        for (final row in rows.take(_maxRowsToShow))
+        for (final row in rows.take(maxRowsToShow))
           if (row.groupName == null || row.accounts.length == 1)
             _AccountRow(
               account: row.accounts.first,
