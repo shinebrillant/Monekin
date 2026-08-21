@@ -1199,6 +1199,13 @@
       "no_liabilities": "Ви ще не маєте зобов'язань.",
       "name": "Назва активу",
       "name_required": "Введіть назву активу",
+      "NAME_HINTS": {
+        "real_estate": "Будинок на березі моря, Квартира в центрі...",
+        "vehicle": "Tesla Model 3, Сімейний фургон...",
+        "precious_metal": "Золоті зливки, Срібні монети...",
+        "jewelry_art": "Rolex Daytona, Естамп Пікассо...",
+        "other": "Вінтажна гітара, Веб-домен..."
+      },
       "description": "опис",
       "initial_value": "Початкове значення",
       "initial_value_required": "Будь ласка, введіть початкове значення",

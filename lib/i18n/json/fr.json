@@ -1199,6 +1199,13 @@
       "no_liabilities": "Vous n'avez pas encore de passif.",
       "name": "Nom de l'actif",
       "name_required": "Veuillez saisir un nom d'actif",
+      "NAME_HINTS": {
+        "real_estate": "Maison de plage, Appartement en centre-ville...",
+        "vehicle": "Tesla Model 3, Fourgonnette familiale...",
+        "precious_metal": "Lingots d'or, Pièces d'argent...",
+        "jewelry_art": "Rolex Daytona, Gravure de Picasso...",
+        "other": "Guitare vintage, Nom de domaine..."
+      },
       "description": "Description",
       "initial_value": "Valeur initiale",
       "initial_value_required": "Veuillez saisir une valeur initiale",

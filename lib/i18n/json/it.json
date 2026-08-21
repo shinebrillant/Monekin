@@ -1199,6 +1199,13 @@
       "no_liabilities": "Non hai ancora alcuna passività.",
       "name": "Nome della risorsa",
       "name_required": "Inserisci il nome di una risorsa",
+      "NAME_HINTS": {
+        "real_estate": "Casa al mare, Appartamento in centro...",
+        "vehicle": "Tesla Model 3, Furgone familiare...",
+        "precious_metal": "Lingotti d'oro, Monete d'argento...",
+        "jewelry_art": "Rolex Daytona, Stampa di Picasso...",
+        "other": "Chitarra vintage, Dominio web..."
+      },
       "description": "Descrizione",
       "initial_value": "Valore iniziale",
       "initial_value_required": "Inserisci un valore iniziale",

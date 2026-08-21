@@ -1199,6 +1199,13 @@
       "no_liabilities": "Sie haben noch keine Verbindlichkeiten.",
       "name": "Asset-Name",
       "name_required": "Bitte geben Sie einen Asset-Namen ein",
+      "NAME_HINTS": {
+        "real_estate": "Strandhaus, Wohnung in der Innenstadt...",
+        "vehicle": "Tesla Model 3, Familienvan...",
+        "precious_metal": "Goldbarren, Silbermünzen...",
+        "jewelry_art": "Rolex Daytona, Picasso-Druck...",
+        "other": "Vintage-Gitarre, Webdomain..."
+      },
       "description": "Beschreibung",
       "initial_value": "Anfangswert",
       "initial_value_required": "Bitte geben Sie einen Anfangswert ein",

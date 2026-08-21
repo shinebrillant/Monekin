@@ -1224,6 +1224,13 @@
       "no_liabilities": "You don't have any liabilities yet.",
       "name": "Asset name",
       "name_required": "Please enter an asset name",
+      "NAME_HINTS": {
+        "real_estate": "Beach house, Downtown flat...",
+        "vehicle": "Tesla Model 3, Family van...",
+        "precious_metal": "Gold bars, Silver coins...",
+        "jewelry_art": "Rolex Daytona, Picasso print...",
+        "other": "Vintage guitar, Web domain..."
+      },
       "description": "Description",
       "initial_value": "Initial value",
       "initial_value_required": "Please enter an initial value",

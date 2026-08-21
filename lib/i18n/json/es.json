@@ -1211,6 +1211,13 @@
       "no_liabilities": "Todavía no tienes ninguna deuda.",
       "name": "Nombre del activo",
       "name_required": "Por favor ingrese un nombre de activo",
+      "NAME_HINTS": {
+        "real_estate": "Casa de la playa, Piso en el centro...",
+        "vehicle": "Tesla Model 3, Furgoneta familiar...",
+        "precious_metal": "Lingotes de oro, Monedas de plata...",
+        "jewelry_art": "Rolex Daytona, Grabado de Picasso...",
+        "other": "Guitarra de coleccionista, Dominio web..."
+      },
       "description": "Descripción",
       "initial_value": "Valor inicial",
       "initial_value_required": "Por favor ingrese un valor inicial",

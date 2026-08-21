@@ -612,6 +612,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: '${t.assets.form.name} *',
+                    hintText: _assetType.nameHint(context),
                   ),
                   validator: (value) => fieldValidator(value, isRequired: true),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
